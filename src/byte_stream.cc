@@ -1,77 +1,79 @@
 #include "byte_stream.hh"
 
-#include <stdexcept>
-
 using namespace std;
 
 ByteStream::ByteStream(uint64_t capacity) : capacity_(capacity) {}
 
-void Writer::push(string data)
+void Writer::push(const string& data)
 {
-  // Your code here.
-  (void)data;
+  for (const auto byte : data) {
+    if (capacity_ == 0) {
+      break;
+    }
+    byte_stream_.push(byte);
+    push_count_++;
+    capacity_--;
+  }
 }
 
 void Writer::close()
 {
-  // Your code here.
+  close_ = true;
 }
 
 void Writer::set_error()
 {
-  // Your code here.
+  error_ = true;
 }
 
 bool Writer::is_closed() const
 {
-  // Your code here.
-  return {};
+  return close_;
 }
 
 uint64_t Writer::available_capacity() const
 {
-  // Your code here.
-  return {};
+  return capacity_;
 }
 
 uint64_t Writer::bytes_pushed() const
 {
-  // Your code here.
-  return {};
+  return push_count_;
 }
 
 string_view Reader::peek() const
 {
-  // Your code here.
-  return {};
+  // The string view must reference to the underlying byte
+  // of the byte stream. Got memory error if let string_view
+  // refer to a local variable
+  return {&byte_stream_.front(), 1};
 }
 
 bool Reader::is_finished() const
 {
-  // Your code here.
-  return {};
+  return close_ && byte_stream_.empty();
 }
 
 bool Reader::has_error() const
 {
-  // Your code here.
-  return {};
+  return error_;
 }
 
 void Reader::pop(uint64_t len)
 {
-  // Your code here.
-  (void)len;
+  while (len-- > 0 && !byte_stream_.empty()) {
+    byte_stream_.pop();
+    pop_count_++;
+    capacity_++;
+  }
 }
 
 uint64_t Reader::bytes_buffered() const
 {
-  // Your code here.
-  return {};
+  return byte_stream_.size();
 }
 
 uint64_t Reader::bytes_popped() const
 {
-  // Your code here.
-  return {};
+  return pop_count_;
 }
