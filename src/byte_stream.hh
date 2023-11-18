@@ -1,7 +1,7 @@
 #pragma once
 
-#include <queue>
 #include <cstdint>
+#include <queue>
 #include <stdexcept>
 #include <string>
 #include <string_view>
