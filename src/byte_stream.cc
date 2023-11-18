@@ -1,12 +1,12 @@
-#include <stdexcept>
-
 #include "byte_stream.hh"
+
+#include <stdexcept>
 
 using namespace std;
 
-ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) {}
+ByteStream::ByteStream(uint64_t capacity) : capacity_(capacity) {}
 
-void Writer::push( string data )
+void Writer::push(string data)
 {
   // Your code here.
   (void)data;
@@ -58,7 +58,7 @@ bool Reader::has_error() const
   return {};
 }
 
-void Reader::pop( uint64_t len )
+void Reader::pop(uint64_t len)
 {
   // Your code here.
   (void)len;

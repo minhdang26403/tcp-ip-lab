@@ -1,8 +1,8 @@
 #pragma once
 
-#include "wrapping_integers.hh"
-
 #include <optional>
+
+#include "wrapping_integers.hh"
 
 /*
  * The TCPReceiverMessage structure contains the information sent from a TCP receiver to its sender.

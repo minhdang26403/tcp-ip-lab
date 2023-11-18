@@ -1,9 +1,9 @@
 #pragma once
 
+#include <string>
+
 #include "buffer.hh"
 #include "wrapping_integers.hh"
-
-#include <string>
 
 /*
  * The TCPSenderMessage structure contains the information sent from a TCP sender to its receiver.
@@ -23,10 +23,10 @@
 
 struct TCPSenderMessage
 {
-  Wrap32 seqno { 0 };
-  bool SYN { false };
+  Wrap32 seqno {0};
+  bool SYN {false};
   Buffer payload {};
-  bool FIN { false };
+  bool FIN {false};
 
   // How many sequence numbers does this segment use?
   size_t sequence_length() const { return SYN + payload.size() + FIN; }
