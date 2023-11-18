@@ -7,13 +7,13 @@
 
 using namespace std;
 
-void get_URL(const string &host, const string &path) {
-  TCPSocket client_socket{};
-  const Address server_address{host, "http"};
+void get_URL(const string& host, const string& path)
+{
+  TCPSocket client_socket {};
+  const Address server_address {host, "http"};
   client_socket.connect(server_address);
 
-  const string message = "GET " + path + " HTTP/1.1\r\nHost: " + host +
-                         "\r\nConnection: close\r\n\r\n";
+  const string message = "GET " + path + " HTTP/1.1\r\nHost: " + host + "\r\nConnection: close\r\n\r\n";
   client_socket.write(message);
 
   string buffer;
@@ -23,10 +23,11 @@ void get_URL(const string &host, const string &path) {
   }
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[])
+{
   try {
     if (argc <= 0) {
-      abort();  // For sticklers: don't try to access argv[0] if argc <= 0.
+      abort(); // For sticklers: don't try to access argv[0] if argc <= 0.
     }
 
     auto args = span(argv, argc);
@@ -41,12 +42,12 @@ int main(int argc, char *argv[]) {
     }
 
     // Get the command-line arguments.
-    const string host{args[1]};
-    const string path{args[2]};
+    const string host {args[1]};
+    const string path {args[2]};
 
     // Call the student-written function.
     get_URL(host, path);
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << e.what() << "\n";
     return EXIT_FAILURE;
   }

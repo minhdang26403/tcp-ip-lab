@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void all_zeroes(ByteStreamTestHarness &test)
+void all_zeroes(ByteStreamTestHarness& test)
 {
   test.execute(BytesBuffered {0});
   test.execute(AvailableCapacity {15});
@@ -43,7 +43,7 @@ int main()
       all_zeroes(test);
     }
 
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << "Exception: " << e.what() << "\n";
     return EXIT_FAILURE;
   }
