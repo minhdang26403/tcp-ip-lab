@@ -5,4 +5,5 @@ WarningsAsErrors:
    '*'
 
 CheckOptions:
-   hicpp-signed-bitwise.IgnorePositiveIntegerLiterals: 'true'
+  - key: hicpp-signed-bitwise.IgnorePositiveIntegerLiterals
+    value: 'true'
