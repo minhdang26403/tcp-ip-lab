@@ -1,47 +1,57 @@
 #include "reassembler.hh"
 #include <iostream>
+#include <type_traits>
 
 using namespace std;
 
 void Reassembler::insert(uint64_t first_index, string data, bool is_last_substring, Writer& output)
 {
+  uint64_t available_capacity = output.available_capacity();
+  uint64_t first_unacceptable_index = first_unassembled_index_ + available_capacity;
+
   if (is_last_substring) {
-    got_last_byte = true;
+    eof_ = true;
   }
 
-  if (first_index + data.size() <= first_unassembled_index_) {
-    check_close_stream(output);
+  // This check handle three cases:
+  // - Empty segment
+  // - Already assembled segment
+  // - Segment that can't fit in the assembler's underlying storage
+  if (first_index + data.size() <= first_unassembled_index_ || first_index >= first_unacceptable_index) {
+    try_close_stream(output);
     return;
   }
-  uint64_t offset = 0;
-  while (first_index + offset < first_unassembled_index_) {
-    offset++;
-  }
-  first_index += offset;
-  data = data.substr(offset);
 
-  if (first_index >= first_unassembled_index_ + output.available_capacity()) {
-    check_close_stream(output);
-    return;
-  } else if (first_index + data.size() > first_unassembled_index_ + output.available_capacity()) {
-    data.resize(output.available_capacity());
+  // Trim bytes that were already assembled
+  if (first_index <= first_unassembled_index_) {
+    uint64_t assembled_bytes = first_unassembled_index_ - first_index;
+    first_index = first_unassembled_index_;
+    data = data.substr(assembled_bytes);
+  }
+
+  // Trim bytes that can't fit in the assembler's storage
+  if (first_index + data.size() > first_unacceptable_index) {
+    data.resize(first_unacceptable_index - first_index);
   }
 
   auto it = buffer_.upper_bound(first_index);
+  uint64_t last_index = first_index + data.size() - 1;
 
-  // Check intervals before this new interval
+  // Check the segment before this new segment
   if (it != buffer_.begin()) {
     auto prev = it;
     prev--;
-    // New interval is already covered by a previous interval
-    if (first_index + data.size() <= prev->first + prev->second.size()) {
-      check_close_stream(output);
+    uint64_t prev_last_index = prev->first + prev->second.size() - 1;
+    // New segment is already covered by a previous segment
+    if (last_index <= prev_last_index) {
       return;
     }
-    // Trim the previous interval
-    if (prev->first + prev->second.size() >= first_index) {
+    // Trim the previous segment
+    if (prev_last_index >= first_index) {
       uint64_t remaining_bytes = first_index - prev->first;
-      num_bytes_pending_ -= (prev->second.size() - remaining_bytes);
+      uint64_t overlapping_bytes = prev->second.size() - remaining_bytes;
+      num_bytes_pending_ -= overlapping_bytes;
+      // We can either keep empty segment in the assembler or delete it
       if (remaining_bytes == 0) {
         buffer_.erase(prev);
       } else {
@@ -50,35 +60,45 @@ void Reassembler::insert(uint64_t first_index, string data, bool is_last_substri
     }
   }
 
-  while (it != buffer_.end() && it->first < first_index + data.size()) {
-    if (it->first + it->second.size() <= first_index + data.size()) {
-      num_bytes_pending_ -= it->second.size();
-      it = buffer_.erase(it);
+  // Check the segment(s) after this new segment
+  while (it != buffer_.end() && it->first <= last_index) {
+    uint64_t cur_first_index = it->first;
+    const string& cur_data = it->second;
+    if (cur_first_index + cur_data.size() - 1 <= last_index) {
+      // The current segment is covered by the new segment
+      num_bytes_pending_ -= cur_data.size();
     } else {
-      uint64_t new_index = first_index + data.size();
-      uint64_t tmp_offset = new_index - it->first;
-      string new_data = it->second.substr(tmp_offset);
-      buffer_[new_index] = new_data;
-      num_bytes_pending_ -= tmp_offset;
-      it = buffer_.erase(it);
+      // Split the current segment and remove overlapping bytes
+      uint64_t new_index = last_index + 1;
+      uint64_t overlapping_bytes = new_index - cur_first_index;
+      buffer_[new_index] = cur_data.substr(overlapping_bytes);
+      num_bytes_pending_ -= overlapping_bytes;
     }
+    it = buffer_.erase(it);
   }
 
   buffer_[first_index] = data;
   num_bytes_pending_ += data.size();
 
   while (!buffer_.empty() && buffer_.begin()->first == first_unassembled_index_) {
-    const auto [_, bytes] = *buffer_.begin();
-    output.push(bytes);
+    auto& [_, bytes] = *buffer_.begin();
     num_bytes_pending_ -= bytes.size();
     first_unassembled_index_ += bytes.size();
+    output.push(std::move(bytes));
     buffer_.erase(buffer_.begin());
   }
 
-  check_close_stream(output);
+  try_close_stream(output);
 }
 
 uint64_t Reassembler::bytes_pending() const
 {
   return num_bytes_pending_;
+}
+
+void Reassembler::try_close_stream(Writer& output)
+{
+  if (eof_ && bytes_pending() == 0) {
+    output.close();
+  }
 }

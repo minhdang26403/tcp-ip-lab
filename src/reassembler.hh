@@ -35,17 +35,11 @@ public:
   uint64_t bytes_pending() const;
 
 private:
-  void check_close_stream(Writer& output)
-  {
-    if (got_last_byte && buffer_.empty()) {
-      output.close();
-    }
-  }
+  void try_close_stream(Writer& output);
 
   uint64_t first_unassembled_index_ {};
-  // std::unordered_map<uint64_t, std::string> buffer_{};
   std::map<uint64_t, std::string> buffer_ {};
-
-  bool got_last_byte {};
+  bool eof_ {};
   uint64_t num_bytes_pending_ {};
 };
+
