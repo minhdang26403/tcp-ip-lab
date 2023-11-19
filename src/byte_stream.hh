@@ -17,7 +17,7 @@ protected:
   bool close_ {};
   bool error_ {};
   // std::queue<char> byte_stream_ {};
-  std::string byte_stream_{};
+  std::string byte_stream_ {};
   uint64_t push_count_ {};
   uint64_t pop_count_ {};
 

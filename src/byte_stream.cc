@@ -5,7 +5,7 @@ using namespace std;
 ByteStream::ByteStream(uint64_t capacity) : capacity_(capacity) {}
 
 void Writer::push(string data)
-{ 
+{
   uint64_t count = min(capacity_, data.size());
   data.resize(count);
   byte_stream_.append(data);
@@ -57,7 +57,7 @@ bool Reader::has_error() const
 }
 
 void Reader::pop(uint64_t len)
-{ 
+{
   uint64_t count = min(byte_stream_.size(), len);
   byte_stream_.erase(byte_stream_.begin(), byte_stream_.begin() + count);
   pop_count_ += count;
