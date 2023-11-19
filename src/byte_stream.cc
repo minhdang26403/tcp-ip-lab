@@ -1,19 +1,16 @@
 #include "byte_stream.hh"
-
+#include <iostream>
 using namespace std;
 
 ByteStream::ByteStream(uint64_t capacity) : capacity_(capacity) {}
 
-void Writer::push(const string& data)
-{
-  for (const auto byte : data) {
-    if (capacity_ == 0) {
-      break;
-    }
-    byte_stream_.push(byte);
-    push_count_++;
-    capacity_--;
-  }
+void Writer::push(string data)
+{ 
+  uint64_t count = min(capacity_, data.size());
+  data.resize(count);
+  byte_stream_.append(data);
+  push_count_ += count;
+  capacity_ -= count;
 }
 
 void Writer::close()
@@ -46,7 +43,7 @@ string_view Reader::peek() const
   // The string view must reference to the underlying byte
   // of the byte stream. Got memory error if let string_view
   // refer to a local variable
-  return {&byte_stream_.front(), 1};
+  return {byte_stream_};
 }
 
 bool Reader::is_finished() const
@@ -60,12 +57,11 @@ bool Reader::has_error() const
 }
 
 void Reader::pop(uint64_t len)
-{
-  while (len-- > 0 && !byte_stream_.empty()) {
-    byte_stream_.pop();
-    pop_count_++;
-    capacity_++;
-  }
+{ 
+  uint64_t count = min(byte_stream_.size(), len);
+  byte_stream_.erase(byte_stream_.begin(), byte_stream_.begin() + count);
+  pop_count_ += count;
+  capacity_ += count;
 }
 
 uint64_t Reader::bytes_buffered() const
