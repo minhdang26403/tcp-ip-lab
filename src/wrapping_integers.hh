@@ -12,6 +12,7 @@ class Wrap32
 {
 protected:
   uint32_t raw_value_ {};
+  static constexpr uint64_t MOD = static_cast<uint64_t>(UINT32_MAX) + 1; 
 
 public:
   explicit Wrap32(uint32_t raw_value) : raw_value_(raw_value) {}
