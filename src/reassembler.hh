@@ -42,4 +42,3 @@ private:
   bool eof_ {};
   uint64_t num_bytes_pending_ {};
 };
-

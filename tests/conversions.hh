@@ -17,9 +17,9 @@ public:
   uint32_t debug_get_raw_value() { return raw_value_; }
 };
 
-inline std::string to_string( Wrap32 i )
+inline std::string to_string(Wrap32 i)
 {
-  return "Wrap32<" + std::to_string( DebugWrap32 { i }.debug_get_raw_value() ) + ">";
+  return "Wrap32<" + std::to_string(DebugWrap32 {i}.debug_get_raw_value()) + ">";
 }
 
 template<typename T>
@@ -45,18 +45,18 @@ std::string to_string(T&& t)
   return minnow_conversions::as_string(std::forward<T>(t));
 }
 
-inline std::ostream& operator<<( std::ostream& os, Wrap32 a )
+inline std::ostream& operator<<(std::ostream& os, Wrap32 a)
 {
-  return os << to_string( a );
+  return os << to_string(a);
 }
 
-inline bool operator!=( Wrap32 a, Wrap32 b )
+inline bool operator!=(Wrap32 a, Wrap32 b)
 {
-  return not( a == b );
+  return not(a == b);
 }
 
-inline int64_t operator-( Wrap32 a, Wrap32 b )
+inline int64_t operator-(Wrap32 a, Wrap32 b)
 {
-  return static_cast<int64_t>( minnow_conversions::DebugWrap32 { a }.debug_get_raw_value() )
-         - static_cast<int64_t>( minnow_conversions::DebugWrap32 { b }.debug_get_raw_value() );
+  return static_cast<int64_t>(minnow_conversions::DebugWrap32 {a}.debug_get_raw_value())
+         - static_cast<int64_t>(minnow_conversions::DebugWrap32 {b}.debug_get_raw_value());
 }
