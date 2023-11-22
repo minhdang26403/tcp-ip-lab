@@ -101,8 +101,8 @@ int main()
       test.execute(SegmentArrives {}.with_syn().with_seqno(isn));
       test.execute(SegmentArrives {}.with_seqno(isn).with_data("a"));
       test.execute(BytesPushed {0});
-      test.execute( ExpectAckno { Wrap32 { isn + 1 } } );
-      test.execute( BytesPending( 0 ) );
+      test.execute(ExpectAckno {Wrap32 {isn + 1}});
+      test.execute(BytesPending(0));
     }
 
   } catch (const exception& e) {

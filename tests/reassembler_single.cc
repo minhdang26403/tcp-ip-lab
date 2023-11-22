@@ -55,9 +55,9 @@ int main()
     }
 
     {
-      ReassemblerTestHarness test { "insert empty string @ 0", 65000 };
+      ReassemblerTestHarness test {"insert empty string @ 0", 65000};
 
-      test.execute( Insert { "", 0 } );
+      test.execute(Insert {"", 0});
 
       test.execute(BytesPushed(0));
       test.execute(IsFinished {false});
@@ -65,23 +65,23 @@ int main()
 
     // credit: Joshua Dong
     {
-      ReassemblerTestHarness test { "insert a after 'first unacceptable'", 1 };
+      ReassemblerTestHarness test {"insert a after 'first unacceptable'", 1};
 
-      test.execute( Insert { "g", 3 } );
+      test.execute(Insert {"g", 3});
 
-      test.execute( BytesPushed( 0 ) );
-      test.execute( IsFinished { false } );
+      test.execute(BytesPushed(0));
+      test.execute(IsFinished {false});
     }
 
     {
-      ReassemblerTestHarness test { "insert b before 'first unassembled'", 1 };
+      ReassemblerTestHarness test {"insert b before 'first unassembled'", 1};
 
-      test.execute( Insert { "b", 0 } );
-      test.execute( ReadAll( "b" ) );
-      test.execute( BytesPushed( 1 ) );
-      test.execute( Insert { "b", 0 } );
-      test.execute( BytesPushed( 1 ) );
-      test.execute( IsFinished { false } );
+      test.execute(Insert {"b", 0});
+      test.execute(ReadAll("b"));
+      test.execute(BytesPushed(1));
+      test.execute(Insert {"b", 0});
+      test.execute(BytesPushed(1));
+      test.execute(IsFinished {false});
     }
   } catch (const exception& e) {
     cerr << "Exception: " << e.what() << endl;
