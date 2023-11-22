@@ -9,13 +9,14 @@ I collaborated with: [list sunetids here]
 
 I would like to thank/reward these classmates for their help: [list sunetids here]
 
-This lab took me about [n] hours to do. I [did/did not] attend the lab session.
+This lab took me about 4 hours to do. I [did/did not] attend the lab session.
 
 Program Structure and Design of the TCPReceiver and wrap/unwrap routines:
 []
 
 Implementation Challenges:
-[]
+- Tricky to implement wrapping integer utility correctly
+- Hard to get a clean and concise TCP receiver implementation
 
 Remaining Bugs:
 []
