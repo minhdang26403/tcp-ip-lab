@@ -10,19 +10,19 @@
 
 class Wrap32
 {
-protected:
+ protected:
   uint32_t raw_value_ {};
   static constexpr uint64_t MOD = static_cast<uint64_t>(UINT32_MAX) + 1;
 
-public:
+ public:
   explicit Wrap32(uint32_t raw_value) : raw_value_(raw_value) {}
 
   /* Construct a Wrap32 given an absolute sequence number n and the zero point. */
   static Wrap32 wrap(uint64_t n, Wrap32 zero_point);
 
   /*
-   * The unwrap method returns an absolute sequence number that wraps to this Wrap32, given the zero point
-   * and a "checkpoint": another absolute sequence number near the desired answer.
+   * The unwrap method returns an absolute sequence number that wraps to this Wrap32, given the zero
+   * point and a "checkpoint": another absolute sequence number near the desired answer.
    *
    * There are many possible absolute sequence numbers that all wrap to the same Wrap32.
    * The unwrap method should return the one that is closest to the checkpoint.

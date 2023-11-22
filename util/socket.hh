@@ -9,15 +9,16 @@
 #include "file_descriptor.hh"
 
 //! \brief Base class for network sockets (TCP, UDP, etc.)
-//! \details Socket is generally used via a subclass. See TCPSocket and UDPSocket for usage examples.
+//! \details Socket is generally used via a subclass. See TCPSocket and UDPSocket for usage
+//! examples.
 class Socket : public FileDescriptor
 {
-private:
+ private:
   //! Get the local or peer address the socket is connected to
   Address get_address(const std::string& name_of_function,
                       const std::function<int(int, sockaddr*, socklen_t*)>& function) const;
 
-protected:
+ protected:
   //! Construct via [socket(2)](\ref man2::socket)
   Socket(int domain, int type, int protocol = 0);
 
@@ -25,17 +26,18 @@ protected:
   Socket(FileDescriptor&& fd, int domain, int type, int protocol = 0);
 
   //! Wrapper around [getsockopt(2)](\ref man2::getsockopt)
-  template<typename option_type>
+  template <typename option_type>
   socklen_t getsockopt(int level, int option, option_type& option_value) const;
 
   //! Wrappers around [setsockopt(2)](\ref man2::setsockopt)
-  template<typename option_type>
+  template <typename option_type>
   void setsockopt(int level, int option, const option_type& option_value);
 
   void setsockopt(int level, int option, std::string_view option_val);
 
-public:
-  //! Bind a socket to a specified address with [bind(2)](\ref man2::bind), usually for listen/accept
+ public:
+  //! Bind a socket to a specified address with [bind(2)](\ref man2::bind), usually for
+  //! listen/accept
   void bind(const Address& address);
 
   //! Bind a socket to a specified device
@@ -63,7 +65,7 @@ class DatagramSocket : public Socket
 {
   using Socket::Socket;
 
-public:
+ public:
   //! Receive a datagram and the Address of its sender
   void recv(Address& source_address, std::string& payload);
 
@@ -80,7 +82,7 @@ class UDPSocket : public DatagramSocket
   //! \param[in] fd is the FileDescriptor from which to construct
   explicit UDPSocket(FileDescriptor&& fd) : DatagramSocket(std::move(fd), AF_INET, SOCK_DGRAM) {}
 
-public:
+ public:
   //! Default: construct an unbound, unconnected UDP socket
   UDPSocket() : DatagramSocket(AF_INET, SOCK_DGRAM) {}
 };
@@ -88,12 +90,12 @@ public:
 //! A wrapper around [TCP sockets](\ref man7::tcp)
 class TCPSocket : public Socket
 {
-private:
+ private:
   //! \brief Construct from FileDescriptor (used by accept())
   //! \param[in] fd is the FileDescriptor from which to construct
   explicit TCPSocket(FileDescriptor&& fd) : Socket(std::move(fd), AF_INET, SOCK_STREAM) {}
 
-public:
+ public:
   //! Default: construct an unbound, unconnected TCP socket
   TCPSocket() : Socket(AF_INET, SOCK_STREAM) {}
 
@@ -107,7 +109,7 @@ public:
 //! A wrapper around [packet sockets](\ref man7:packet)
 class PacketSocket : public DatagramSocket
 {
-public:
+ public:
   PacketSocket(const int type, const int protocol) : DatagramSocket(AF_PACKET, type, protocol) {}
 
   void set_promiscuous();

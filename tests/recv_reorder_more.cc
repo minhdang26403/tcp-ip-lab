@@ -24,8 +24,8 @@ void do_test_1(const TCPConfig& cfg, default_random_engine& rd)
   vector<tuple<size_t, size_t>> seq_size;
   size_t datalen = 0;
   while (datalen < cfg.recv_capacity) {
-    const size_t size
-      = min(1 + (static_cast<size_t>(rd()) % (TCPConfig::MAX_PAYLOAD_SIZE - 1)), cfg.recv_capacity - datalen);
+    const size_t size = min(1 + (static_cast<size_t>(rd()) % (TCPConfig::MAX_PAYLOAD_SIZE - 1)),
+                            cfg.recv_capacity - datalen);
     seq_size.emplace_back(datalen, size);
     datalen += size;
   }
@@ -38,9 +38,7 @@ void do_test_1(const TCPConfig& cfg, default_random_engine& rd)
   uint64_t max_expect_ackno = 1;
   for (auto [off, sz] : seq_size) {
     test_1.execute(SegmentArrives {}.with_seqno(rx_isn + 1 + off).with_data(d.substr(off, sz)));
-    if (off + 1 == min_expect_ackno) {
-      min_expect_ackno = min_expect_ackno + sz;
-    }
+    if (off + 1 == min_expect_ackno) { min_expect_ackno = min_expect_ackno + sz; }
     max_expect_ackno = max_expect_ackno + sz;
     test_1.execute(ExpectAcknoBetween {rx_isn, off, min_expect_ackno, max_expect_ackno});
   }
@@ -57,8 +55,8 @@ void do_test_2(const TCPConfig& cfg, default_random_engine& rd)
   vector<tuple<size_t, size_t>> seq_size;
   size_t datalen = 0;
   while (datalen < cfg.recv_capacity) {
-    const size_t size
-      = min(1 + (static_cast<size_t>(rd()) % (TCPConfig::MAX_PAYLOAD_SIZE - 1)), cfg.recv_capacity - datalen);
+    const size_t size = min(1 + (static_cast<size_t>(rd()) % (TCPConfig::MAX_PAYLOAD_SIZE - 1)),
+                            cfg.recv_capacity - datalen);
     const size_t rem = TCPConfig::MAX_PAYLOAD_SIZE - size;
     size_t offs = 0;
     if (rem == 0) {
@@ -90,7 +88,7 @@ void do_test_2(const TCPConfig& cfg, default_random_engine& rd)
     if (off + 1 <= min_expect_ackno && off + sz + 1 > min_expect_ackno) {
       min_expect_ackno = sz + off;
     }
-    max_expect_ackno = max_expect_ackno + sz; // really loose because of overlap
+    max_expect_ackno = max_expect_ackno + sz;  // really loose because of overlap
     test_2.execute(ExpectAcknoBetween {rx_isn, off, min_expect_ackno, max_expect_ackno});
   }
 
@@ -106,14 +104,10 @@ int main()
     auto rd = get_random_engine();
 
     // non-overlapping out-of-order segments
-    for (unsigned rep_no = 0; rep_no < NREPS; ++rep_no) {
-      do_test_1(cfg, rd);
-    }
+    for (unsigned rep_no = 0; rep_no < NREPS; ++rep_no) { do_test_1(cfg, rd); }
 
     // overlapping out-of-order segments
-    for (unsigned rep_no = 0; rep_no < NREPS; ++rep_no) {
-      do_test_2(cfg, rd);
-    }
+    for (unsigned rep_no = 0; rep_no < NREPS; ++rep_no) { do_test_2(cfg, rd); }
   } catch (const exception& e) {
     cerr << e.what() << endl;
     return 1;

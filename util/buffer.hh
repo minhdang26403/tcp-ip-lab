@@ -7,7 +7,7 @@ class Buffer
 {
   std::shared_ptr<std::string> buffer_;
 
-public:
+ public:
   // NOLINTBEGIN(*-explicit-*)
 
   Buffer(std::string str = {}) : buffer_(make_shared<std::string>(std::move(str))) {}

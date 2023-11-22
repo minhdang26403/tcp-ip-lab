@@ -5,23 +5,21 @@
 
 using namespace std;
 
-void stress_test(const size_t input_len,   // NOLINT(bugprone-easily-swappable-parameters)
-                 const size_t capacity,    // NOLINT(bugprone-easily-swappable-parameters)
-                 const size_t random_seed) // NOLINT(bugprone-easily-swappable-parameters)
+void stress_test(const size_t input_len,    // NOLINT(bugprone-easily-swappable-parameters)
+                 const size_t capacity,     // NOLINT(bugprone-easily-swappable-parameters)
+                 const size_t random_seed)  // NOLINT(bugprone-easily-swappable-parameters)
 {
   default_random_engine rd {random_seed};
 
   const string data = [&rd, &input_len] {
     uniform_int_distribution<char> ud;
     string ret;
-    for (size_t i = 0; i < input_len; ++i) {
-      ret += ud(rd);
-    }
+    for (size_t i = 0; i < input_len; ++i) { ret += ud(rd); }
     return ret;
   }();
 
-  ByteStreamTestHarness bs {"stress test input=" + to_string(input_len) + ", capacity=" + to_string(capacity),
-                            capacity};
+  ByteStreamTestHarness bs {
+      "stress test input=" + to_string(input_len) + ", capacity=" + to_string(capacity), capacity};
 
   size_t expected_bytes_pushed {};
   size_t expected_bytes_popped {};
@@ -42,9 +40,7 @@ void stress_test(const size_t input_len,   // NOLINT(bugprone-easily-swappable-p
     bs.execute(BytesPushed {expected_bytes_pushed});
     bs.execute(AvailableCapacity {expected_available_capacity});
 
-    if (expected_bytes_pushed == data.size()) {
-      bs.execute(Close {});
-    }
+    if (expected_bytes_pushed == data.size()) { bs.execute(Close {}); }
 
     /* read something */
     const size_t peek_size = bs.peek_size();

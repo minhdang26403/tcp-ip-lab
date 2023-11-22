@@ -13,7 +13,8 @@ void get_URL(const string& host, const string& path)
   const Address server_address {host, "http"};
   client_socket.connect(server_address);
 
-  const string message = "GET " + path + " HTTP/1.1\r\nHost: " + host + "\r\nConnection: close\r\n\r\n";
+  const string message
+      = "GET " + path + " HTTP/1.1\r\nHost: " + host + "\r\nConnection: close\r\n\r\n";
   client_socket.write(message);
 
   string buffer;
@@ -27,7 +28,7 @@ int main(int argc, char* argv[])
 {
   try {
     if (argc <= 0) {
-      abort(); // For sticklers: don't try to access argv[0] if argc <= 0.
+      abort();  // For sticklers: don't try to access argv[0] if argc <= 0.
     }
 
     auto args = span(argv, argc);

@@ -6,10 +6,11 @@
 
 class TCPReceiver
 {
-private:
-  bool receive_syn_{false};
-  Wrap32 isn_{0};
-public:
+ private:
+  bool receive_syn_ {false};
+  Wrap32 isn_ {0};
+
+ public:
   /*
    * The TCPReceiver receives TCPSenderMessages, inserting their payload into the Reassembler
    * at the correct stream index.

@@ -10,8 +10,9 @@
  *
  * It contains four fields:
  *
- * 1) The sequence number (seqno) of the beginning of the segment. If the SYN flag is set, this is the
- *    sequence number of the SYN flag. Otherwise, it's the sequence number of the beginning of the payload.
+ * 1) The sequence number (seqno) of the beginning of the segment. If the SYN flag is set, this is
+ * the sequence number of the SYN flag. Otherwise, it's the sequence number of the beginning of the
+ * payload.
  *
  * 2) The SYN flag. If set, it means this segment is the beginning of the byte stream, and that
  *    the seqno field contains the Initial Sequence Number (ISN) -- the zero point.

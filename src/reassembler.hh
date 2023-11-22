@@ -8,7 +8,7 @@
 
 class Reassembler
 {
-public:
+ public:
   /*
    * Insert a new substring to be reassembled into a ByteStream.
    *   `first_index`: the index of the first byte of the substring
@@ -34,8 +34,8 @@ public:
   // How many bytes are stored in the Reassembler itself?
   uint64_t bytes_pending() const;
 
-private:
-  void try_close_stream(Writer& output);
+ private:
+  void try_close_stream(Writer& output) const;
 
   uint64_t first_unassembled_index_ {};
   std::map<uint64_t, std::string> buffer_ {};

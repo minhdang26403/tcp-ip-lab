@@ -15,9 +15,9 @@ static_assert(sizeof(Writer) == sizeof(ByteStream),
 
 class ByteStreamTestHarness : public TestHarness<ByteStream>
 {
-public:
+ public:
   ByteStreamTestHarness(std::string test_name, uint64_t capacity)
-    : TestHarness(move(test_name), "capacity=" + std::to_string(capacity), ByteStream {capacity})
+      : TestHarness(move(test_name), "capacity=" + std::to_string(capacity), ByteStream {capacity})
   {}
 
   size_t peek_size() { return object().reader().peek().size(); }
@@ -30,7 +30,10 @@ struct Push : public Action<ByteStream>
   std::string data_;
 
   explicit Push(std::string data) : data_(move(data)) {}
-  std::string description() const override { return "push \"" + Printer::prettify(data_) + "\" to the stream"; }
+  std::string description() const override
+  {
+    return "push \"" + Printer::prettify(data_) + "\" to the stream";
+  }
   void execute(ByteStream& bs) const override { bs.writer().push(data_); }
 };
 
@@ -63,7 +66,10 @@ struct Peek : public Expectation<ByteStream>
 
   explicit Peek(std::string output) : output_(move(output)) {}
 
-  std::string description() const override { return "peeking produces \"" + Printer::prettify(output_) + "\""; }
+  std::string description() const override
+  {
+    return "peeking produces \"" + Printer::prettify(output_) + "\"";
+  }
 
   void execute(ByteStream& bs) const override
   {
@@ -80,8 +86,8 @@ struct Peek : public Expectation<ByteStream>
     }
 
     if (got != output_) {
-      throw ExpectationViolation {"Expected \"" + Printer::prettify(output_) + "\" in buffer, " + " but found \""
-                                  + Printer::prettify(got) + "\""};
+      throw ExpectationViolation {"Expected \"" + Printer::prettify(output_) + "\" in buffer, "
+                                  + " but found \"" + Printer::prettify(got) + "\""};
     }
 
     bs = orig;
@@ -92,14 +98,18 @@ struct PeekOnce : public Peek
 {
   using Peek::Peek;
 
-  std::string description() const override { return "peek() gives exactly \"" + Printer::prettify(output_) + "\""; }
+  std::string description() const override
+  {
+    return "peek() gives exactly \"" + Printer::prettify(output_) + "\"";
+  }
 
   void execute(ByteStream& bs) const override
   {
     auto peeked = bs.reader().peek();
     if (peeked != output_) {
-      throw ExpectationViolation {"Expected exactly \"" + Printer::prettify(output_) + "\" at front of stream, "
-                                  + "but found \"" + Printer::prettify(peeked) + "\""};
+      throw ExpectationViolation {"Expected exactly \"" + Printer::prettify(output_)
+                                  + "\" at front of stream, " + "but found \""
+                                  + Printer::prettify(peeked) + "\""};
     }
   }
 };
@@ -169,9 +179,7 @@ struct ReadAll : public Expectation<ByteStream>
 
   std::string description() const override
   {
-    if (output_.empty()) {
-      return empty_.description();
-    }
+    if (output_.empty()) { return empty_.description(); }
     return "reading \"" + Printer::prettify(output_) + "\" leaves buffer empty";
   }
 
@@ -180,8 +188,8 @@ struct ReadAll : public Expectation<ByteStream>
     std::string got;
     read(bs.reader(), output_.size(), got);
     if (got != output_) {
-      throw ExpectationViolation {"Expected to read \"" + Printer::prettify(output_) + "\", but found \""
-                                  + Printer::prettify(got) + "\""};
+      throw ExpectationViolation {"Expected to read \"" + Printer::prettify(output_)
+                                  + "\", but found \"" + Printer::prettify(got) + "\""};
     }
     empty_.execute(bs);
   }

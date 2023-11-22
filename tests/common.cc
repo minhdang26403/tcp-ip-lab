@@ -9,8 +9,7 @@ using namespace std;
 
 void Printer::diagnostic(std::string_view test_name,
                          const vector<pair<string, int>>& steps_executed,
-                         const string& failing_step,
-                         const exception& e) const
+                         const string& failing_step, const exception& e) const
 {
   const string quote = Printer::with_color(Printer::def, "\"");
   cerr << "\nThe test " << quote << Printer::with_color(Printer::def, test_name) << quote
@@ -22,7 +21,8 @@ void Printer::diagnostic(std::string_view test_name,
   }
   cerr << with_color(red, "  ***** Unsuccessful " + failing_step + " *****\n\n");
 
-  cerr << with_color(red, demangle(typeid(e).name())) << ": " << with_color(def, e.what()) << "\n\n";
+  cerr << with_color(red, demangle(typeid(e).name())) << ": " << with_color(def, e.what())
+       << "\n\n";
 }
 
 string Printer::prettify(string_view str, size_t max_length)
@@ -36,9 +36,7 @@ string Printer::prettify(string_view str, size_t max_length)
       ss << "\\x" << fixed << setw(2) << setfill('0') << hex << static_cast<size_t>(ch);
     }
   }
-  if (str.size() > str_prefix.size()) {
-    ss << "...";
-  }
+  if (str.size() > str_prefix.size()) { ss << "..."; }
   return ss.str();
 }
 
@@ -47,15 +45,11 @@ Printer::Printer() : is_terminal_(isatty(STDERR_FILENO) or getenv("MAKE_TERMOUT"
 string Printer::with_color(int color_value, string_view str) const
 {
   string ret;
-  if (is_terminal_) {
-    ret += "\033[1;" + to_string(color_value) + "m";
-  }
+  if (is_terminal_) { ret += "\033[1;" + to_string(color_value) + "m"; }
 
   ret += str;
 
-  if (is_terminal_) {
-    ret += "\033[m";
-  }
+  if (is_terminal_) { ret += "\033[m"; }
 
   return ret;
 }

@@ -110,7 +110,11 @@ int main()
       const uint32_t isn = uniform_int_distribution<uint32_t> {0, UINT32_MAX}(rd);
       TCPReceiverTestHarness test {"segment with SYN + payload + FIN", 4000};
       test.execute(HasAckno {false});
-      test.execute(SegmentArrives {}.with_syn().with_seqno(isn).with_data("Hello and goodbye, CS144!").with_fin());
+      test.execute(SegmentArrives {}
+                       .with_syn()
+                       .with_seqno(isn)
+                       .with_data("Hello and goodbye, CS144!")
+                       .with_fin());
       test.execute(IsClosed {true});
       test.execute(ExpectAckno {Wrap32 {isn + 27}});
       test.execute(BytesPending {0});

@@ -19,7 +19,8 @@ int main()
     // Unwrap the last byte before the third wrap
     test_should_be(Wrap32(UINT32_MAX - 1).unwrap(Wrap32(0), 3 * (1UL << 32)), 3 * (1UL << 32) - 2);
     // Unwrap the 10th from last byte before the third wrap
-    test_should_be(Wrap32(UINT32_MAX - 10).unwrap(Wrap32(0), 3 * (1UL << 32)), 3 * (1UL << 32) - 11);
+    test_should_be(Wrap32(UINT32_MAX - 10).unwrap(Wrap32(0), 3 * (1UL << 32)),
+                   3 * (1UL << 32) - 11);
     // Non-zero ISN
     test_should_be(Wrap32(UINT32_MAX).unwrap(Wrap32(10), 3 * (1UL << 32)), 3 * (1UL << 32) - 11);
     // Big unwrap
@@ -34,7 +35,8 @@ int main()
     // Barely big unwrap with non-zero ISN
     test_should_be(Wrap32(UINT32_MAX).unwrap(Wrap32(INT32_MAX), 0), static_cast<uint64_t>(1) << 31);
     // Nearly big unwrap with non-zero ISN
-    test_should_be(Wrap32(UINT32_MAX).unwrap(Wrap32(1UL << 31), 0), static_cast<uint64_t>(UINT32_MAX) >> 1);
+    test_should_be(Wrap32(UINT32_MAX).unwrap(Wrap32(1UL << 31), 0),
+                   static_cast<uint64_t>(UINT32_MAX) >> 1);
   } catch (const exception& e) {
     cerr << e.what() << endl;
     return 1;

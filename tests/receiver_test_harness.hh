@@ -11,13 +11,14 @@
 
 using ReceiverSet = std::pair<StreamAndReassembler, TCPReceiver>;
 
-template<std::derived_from<TestStep<StreamAndReassembler>> T>
+template <std::derived_from<TestStep<StreamAndReassembler>> T>
 struct ReceiverSetTestStep : public TestStep<ReceiverSet>
 {
   T step_;
 
-  template<typename... Targs>
-  explicit ReceiverSetTestStep(T sr_test_step) : TestStep<ReceiverSet>(), step_(std::move(sr_test_step))
+  template <typename... Targs>
+  explicit ReceiverSetTestStep(T sr_test_step)
+      : TestStep<ReceiverSet>(), step_(std::move(sr_test_step))
   {}
 
   std::string str() const override { return step_.str(); }
@@ -27,20 +28,19 @@ struct ReceiverSetTestStep : public TestStep<ReceiverSet>
 
 class TCPReceiverTestHarness : public TestHarness<ReceiverSet>
 {
-public:
+ public:
   TCPReceiverTestHarness(std::string test_name, uint64_t capacity)
-    : TestHarness(move(test_name),
-                  "capacity=" + std::to_string(capacity),
-                  {{ByteStream {capacity}, Reassembler {}}, TCPReceiver {}})
+      : TestHarness(move(test_name), "capacity=" + std::to_string(capacity),
+                    {{ByteStream {capacity}, Reassembler {}}, TCPReceiver {}})
   {}
 
-  template<std::derived_from<TestStep<StreamAndReassembler>> T>
+  template <std::derived_from<TestStep<StreamAndReassembler>> T>
   void execute(const T& test)
   {
     TestHarness<ReceiverSet>::execute(ReceiverSetTestStep {test});
   }
 
-  template<std::derived_from<TestStep<ByteStream>> T>
+  template <std::derived_from<TestStep<ByteStream>> T>
   void execute(const T& test)
   {
     TestHarness<ReceiverSet>::execute(ReceiverSetTestStep {ReassemblerByteStreamTestStep {test}});
@@ -53,7 +53,10 @@ struct ExpectWindow : public ExpectNumber<ReceiverSet, uint16_t>
 {
   using ExpectNumber::ExpectNumber;
   std::string name() const override { return "window_size"; }
-  uint16_t value(ReceiverSet& rs) const override { return rs.second.send(rs.first.first.writer()).window_size; }
+  uint16_t value(ReceiverSet& rs) const override
+  {
+    return rs.second.send(rs.first.first.writer()).window_size;
+  }
 };
 
 struct ExpectAckno : public ExpectNumber<ReceiverSet, std::optional<Wrap32>>
@@ -71,8 +74,9 @@ struct ExpectAcknoBetween : public Expectation<ReceiverSet>
   Wrap32 isn_;
   uint64_t checkpoint_;
   uint64_t min_, max_;
-  ExpectAcknoBetween(Wrap32 isn, uint64_t checkpoint, uint64_t min, uint64_t max) // NOLINT(*-swappable-*)
-    : isn_(isn), checkpoint_(checkpoint), min_(min), max_(max)
+  ExpectAcknoBetween(Wrap32 isn, uint64_t checkpoint, uint64_t min,
+                     uint64_t max)  // NOLINT(*-swappable-*)
+      : isn_(isn), checkpoint_(checkpoint), min_(min), max_(max)
   {}
 
   std::string description() const override
@@ -98,7 +102,10 @@ struct HasAckno : public ExpectBool<ReceiverSet>
 {
   using ExpectBool::ExpectBool;
   std::string name() const override { return "ackno.has_value()"; }
-  bool value(ReceiverSet& rs) const override { return rs.second.send(rs.first.first.writer()).ackno.has_value(); }
+  bool value(ReceiverSet& rs) const override
+  {
+    return rs.second.send(rs.first.first.writer()).ackno.has_value();
+  }
 };
 
 struct SegmentArrives : public Action<ReceiverSet>
@@ -149,15 +156,11 @@ struct SegmentArrives : public Action<ReceiverSet>
     std::ostringstream ss;
     ss << "receive segment: (";
     ss << "seqno=" << msg_.seqno;
-    if (msg_.SYN) {
-      ss << " +SYN";
-    }
+    if (msg_.SYN) { ss << " +SYN"; }
     if (not msg_.payload.empty()) {
       ss << " payload=\"" << Printer::prettify(msg_.payload) << "\"";
     }
-    if (msg_.FIN) {
-      ss << " +FIN";
-    }
+    if (msg_.FIN) { ss << " +FIN"; }
     ss << ")";
 
     if (ackno_expected_.value_) {
