@@ -1,7 +1,7 @@
 ---
 Language: Cpp
-BasedOnStyle: Mozilla
-ColumnLimit: 116
+BasedOnStyle: Google
+ColumnLimit: 100
 SpacesInParentheses: false
 AlwaysBreakAfterReturnType: None
 AlwaysBreakAfterDefinitionReturnType: None
@@ -10,6 +10,7 @@ BreakBeforeBinaryOperators: All
 Cpp11BracedListStyle: true
 AllowShortBlocksOnASingleLine: Always
 BreakBeforeBraces: Custom
+IncludeBlocks: Preserve
 BraceWrapping:
   AfterClass: true
   AfterControlStatement: Never
