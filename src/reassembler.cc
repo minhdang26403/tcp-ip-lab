@@ -96,6 +96,11 @@ uint64_t Reassembler::bytes_pending() const
   return num_bytes_pending_;
 }
 
+uint64_t Reassembler::first_unassembled_index() const
+{
+  return first_unassembled_index_;
+}
+
 void Reassembler::try_close_stream(Writer& output)
 {
   if (eof_ && bytes_pending() == 0) {
