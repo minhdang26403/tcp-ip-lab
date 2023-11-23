@@ -1,16 +1,17 @@
 #include "tcp_receiver.hh"
 
-#include <cstdint>
-
 #include "byte_stream.hh"
 #include "reassembler.hh"
 #include "tcp_receiver_message.hh"
 #include "tcp_sender_message.hh"
 
+#include <cstdint>
+
 using namespace std;
 
-void TCPReceiver::receive(TCPSenderMessage message, Reassembler &reassembler,
-                          Writer &inbound_stream)
+void TCPReceiver::receive(TCPSenderMessage message,
+                          Reassembler& reassembler,
+                          Writer& inbound_stream)
 {
   if (!receive_SYN_) {
     // Drop messages if we haven't received a message with SYN flag
@@ -30,13 +31,13 @@ void TCPReceiver::receive(TCPSenderMessage message, Reassembler &reassembler,
   reassembler.insert(stream_index, message.payload.release(), message.FIN, inbound_stream);
 }
 
-TCPReceiverMessage TCPReceiver::send(const Writer &inbound_stream) const
+TCPReceiverMessage TCPReceiver::send(const Writer& inbound_stream) const
 {
   TCPReceiverMessage recv_msg {};
   // Window size is limited to 65,535 (UINT16_MAX)
   const uint16_t window_size = (inbound_stream.available_capacity() > UINT16_MAX)
-                                   ? UINT16_MAX
-                                   : inbound_stream.available_capacity();
+                                 ? UINT16_MAX
+                                 : inbound_stream.available_capacity();
   recv_msg.window_size = window_size;
 
   if (!receive_SYN_) {

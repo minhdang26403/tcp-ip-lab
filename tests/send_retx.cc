@@ -26,7 +26,7 @@ int main()
       TCPSenderTestHarness test {"Retx SYN twice at the right times, then ack", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectNoSegment {});
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {1});
@@ -34,7 +34,7 @@ int main()
       test.execute(ExpectNoSegment {});
       test.execute(Tick {1});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {1});
       // Wait twice as long b/c exponential back-off
@@ -42,7 +42,7 @@ int main()
       test.execute(ExpectNoSegment {});
       test.execute(Tick {1});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {1});
       test.execute(AckReceived {Wrap32 {isn + 1}});
@@ -60,7 +60,7 @@ int main()
       TCPSenderTestHarness test {"Retx SYN until too many retransmissions", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectNoSegment {});
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {1});
@@ -69,12 +69,12 @@ int main()
         test.execute(ExpectNoSegment {});
         test.execute(Tick {1}.with_max_retx_exceeded(false));
         test.execute(
-            ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
         test.execute(ExpectSeqno {isn + 1});
         test.execute(ExpectSeqnosInFlight {1});
       }
       test.execute(
-          Tick {(retx_timeout << TCPConfig::MAX_RETX_ATTEMPTS) - 1U}.with_max_retx_exceeded(false));
+        Tick {(retx_timeout << TCPConfig::MAX_RETX_ATTEMPTS) - 1U}.with_max_retx_exceeded(false));
       test.execute(Tick {1}.with_max_retx_exceeded(true));
     }
 
@@ -88,7 +88,7 @@ int main()
       TCPSenderTestHarness test {"Send some data, the retx and succeed, then retx till limit", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectNoSegment {});
       test.execute(AckReceived {Wrap32 {isn + 1}});
       test.execute(Push {"abcd"});
@@ -114,11 +114,11 @@ int main()
         test.execute(ExpectSeqnosInFlight {4});
       }
       test.execute(
-          Tick {(retx_timeout << TCPConfig::MAX_RETX_ATTEMPTS) - 1U}.with_max_retx_exceeded(false));
+        Tick {(retx_timeout << TCPConfig::MAX_RETX_ATTEMPTS) - 1U}.with_max_retx_exceeded(false));
       test.execute(Tick {1}.with_max_retx_exceeded(true));
     }
 
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << e.what() << endl;
     return 1;
   }

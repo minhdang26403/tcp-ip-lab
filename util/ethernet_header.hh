@@ -29,6 +29,6 @@ struct EthernetHeader
   // Return a string containing a header in human-readable format
   std::string to_string() const;
 
-  void parse(Parser &parser);
-  void serialize(Serializer &serializer) const;
+  void parse(Parser& parser);
+  void serialize(Serializer& serializer) const;
 };

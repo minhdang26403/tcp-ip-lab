@@ -1,21 +1,21 @@
 #include "common.hh"
 
-#include <unistd.h>
-
 #include <iomanip>
 #include <iostream>
+#include <unistd.h>
 
 using namespace std;
 
 void Printer::diagnostic(std::string_view test_name,
-                         const vector<pair<string, int>> &steps_executed,
-                         const string &failing_step, const exception &e) const
+                         const vector<pair<string, int>>& steps_executed,
+                         const string& failing_step,
+                         const exception& e) const
 {
   const string quote = Printer::with_color(Printer::def, "\"");
   cerr << "\nThe test " << quote << Printer::with_color(Printer::def, test_name) << quote
        << " failed after these steps:\n\n";
   unsigned int step_num = 0;
-  for (const auto &[str, col] : steps_executed) {
+  for (const auto& [str, col] : steps_executed) {
     cerr << "  " << step_num++ << "."
          << "\t" << with_color(col, str) << "\n";
   }

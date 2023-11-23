@@ -48,30 +48,34 @@ int main()
     }
 
     for (uint64_t checkpoint = 2UL * UINT32_MAX - 100000UL;
-         checkpoint < 2UL * UINT32_MAX + 100000UL; ++checkpoint) {
+         checkpoint < 2UL * UINT32_MAX + 100000UL;
+         ++checkpoint) {
       test_should_be(
-          Wrap32::wrap(2UL * UINT32_MAX - 1UL, Wrap32 {19}).unwrap(Wrap32 {19}, checkpoint),
-          2UL * UINT32_MAX - 1UL);
+        Wrap32::wrap(2UL * UINT32_MAX - 1UL, Wrap32 {19}).unwrap(Wrap32 {19}, checkpoint),
+        2UL * UINT32_MAX - 1UL);
     }
 
     for (uint64_t checkpoint = 2UL * UINT32_MAX - 100000UL;
-         checkpoint < 2UL * UINT32_MAX + 100000UL; ++checkpoint) {
+         checkpoint < 2UL * UINT32_MAX + 100000UL;
+         ++checkpoint) {
       test_should_be(Wrap32::wrap(2UL * UINT32_MAX, Wrap32 {19}).unwrap(Wrap32 {19}, checkpoint),
                      2UL * UINT32_MAX);
     }
 
     for (uint64_t checkpoint = 2UL * UINT32_MAX - 100000UL;
-         checkpoint < 2UL * UINT32_MAX + 100000UL; ++checkpoint) {
+         checkpoint < 2UL * UINT32_MAX + 100000UL;
+         ++checkpoint) {
       test_should_be(
-          Wrap32::wrap(2UL * UINT32_MAX + 1UL, Wrap32 {19}).unwrap(Wrap32 {19}, checkpoint),
-          2UL * UINT32_MAX + 1UL);
+        Wrap32::wrap(2UL * UINT32_MAX + 1UL, Wrap32 {19}).unwrap(Wrap32 {19}, checkpoint),
+        2UL * UINT32_MAX + 1UL);
     }
 
     for (uint64_t checkpoint = 2UL * UINT32_MAX - 100000UL;
-         checkpoint < 2UL * UINT32_MAX + 100000UL; ++checkpoint) {
+         checkpoint < 2UL * UINT32_MAX + 100000UL;
+         ++checkpoint) {
       test_should_be(
-          Wrap32::wrap(2UL * UINT32_MAX + 2UL, Wrap32 {19}).unwrap(Wrap32 {19}, checkpoint),
-          2UL * UINT32_MAX + 2UL);
+        Wrap32::wrap(2UL * UINT32_MAX + 2UL, Wrap32 {19}).unwrap(Wrap32 {19}, checkpoint),
+        2UL * UINT32_MAX + 2UL);
     }
 
     for (int64_t i = -100000; i < 100000; ++i) {
@@ -81,10 +85,10 @@ int main()
 
     for (int64_t i = -100000; i < 100000; ++i) {
       test_should_be(
-          Wrap32::wrap(2UL * UINT32_MAX + i, Wrap32 {19}).unwrap(Wrap32 {19}, 2UL * UINT32_MAX),
-          2UL * UINT32_MAX + i);
+        Wrap32::wrap(2UL * UINT32_MAX + i, Wrap32 {19}).unwrap(Wrap32 {19}, 2UL * UINT32_MAX),
+        2UL * UINT32_MAX + i);
     }
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << e.what() << endl;
     return 1;
   }

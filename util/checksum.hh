@@ -38,9 +38,9 @@ public:
     return ~ret;
   }
 
-  void add(const std::vector<Buffer> &data)
+  void add(const std::vector<Buffer>& data)
   {
-    for (const auto &x : data) {
+    for (const auto& x : data) {
       add(x);
     }
   }

@@ -31,11 +31,11 @@ void speed_test(const size_t num_chunks,  // NOLINT(bugprone-easily-swappable-pa
   // Split the data into segments before writing
   queue<tuple<uint64_t, string, bool>> split_data;
   for (size_t i = 0; i < data.size(); i += capacity) {
-    split_data.emplace(i + 2, data.substr(i + 2, capacity * 2),
-                       i + 2 + capacity * 2 >= data.size());
+    split_data.emplace(
+      i + 2, data.substr(i + 2, capacity * 2), i + 2 + capacity * 2 >= data.size());
     split_data.emplace(i, data.substr(i, capacity * 2), i + capacity * 2 >= data.size());
-    split_data.emplace(i + 1, data.substr(i + 1, capacity * 2),
-                       i + 1 + capacity * 2 >= data.size());
+    split_data.emplace(
+      i + 1, data.substr(i + 1, capacity * 2), i + 1 + capacity * 2 >= data.size());
   }
 
   ByteStream stream {capacity};
@@ -46,9 +46,9 @@ void speed_test(const size_t num_chunks,  // NOLINT(bugprone-easily-swappable-pa
 
   const auto start_time = steady_clock::now();
   while (not split_data.empty()) {
-    auto &next = split_data.front();
-    reassembler.insert(get<uint64_t>(next), move(get<string>(next)), get<bool>(next),
-                       stream.writer());
+    auto& next = split_data.front();
+    reassembler.insert(
+      get<uint64_t>(next), move(get<string>(next)), get<bool>(next), stream.writer());
     split_data.pop();
 
     while (stream.reader().bytes_buffered()) {
@@ -86,13 +86,16 @@ void speed_test(const size_t num_chunks,  // NOLINT(bugprone-easily-swappable-pa
   }
 }
 
-void program_body() { speed_test(10000, 1500, 1370); }
+void program_body()
+{
+  speed_test(10000, 1500, 1370);
+}
 
 int main()
 {
   try {
     program_body();
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << "Exception: " << e.what() << "\n";
     return EXIT_FAILURE;
   }

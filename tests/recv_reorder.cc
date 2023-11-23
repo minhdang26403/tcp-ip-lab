@@ -127,7 +127,7 @@ int main()
       test.execute(BytesPushed {8});
     }
 
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << e.what() << endl;
     return 1;
   }

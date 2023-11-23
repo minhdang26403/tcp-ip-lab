@@ -16,7 +16,7 @@ using namespace std;
 
 static constexpr unsigned NREPS = 64;
 
-void do_test_1(const TCPConfig &cfg, default_random_engine &rd)
+void do_test_1(const TCPConfig& cfg, default_random_engine& rd)
 {
   const Wrap32 rx_isn(rd());
   TCPReceiverTestHarness test_1 {"non-overlapping out-of-order segments", cfg.recv_capacity};
@@ -49,7 +49,7 @@ void do_test_1(const TCPConfig &cfg, default_random_engine &rd)
   test_1.execute(ReadAll {d});
 }
 
-void do_test_2(const TCPConfig &cfg, default_random_engine &rd)
+void do_test_2(const TCPConfig& cfg, default_random_engine& rd)
 {
   const Wrap32 rx_isn(rd());
   TCPReceiverTestHarness test_2 {"overlapping out-of-order segments", cfg.recv_capacity};
@@ -114,7 +114,7 @@ int main()
     for (unsigned rep_no = 0; rep_no < NREPS; ++rep_no) {
       do_test_2(cfg, rd);
     }
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << e.what() << endl;
     return 1;
   }

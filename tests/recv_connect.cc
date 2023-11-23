@@ -112,7 +112,7 @@ int main()
       TCPReceiverTestHarness test {"window size at 10M", 10'000'000};
       test.execute(ExpectWindow {UINT16_MAX});
     }
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << e.what() << endl;
     return 1;
   }

@@ -1,7 +1,7 @@
+#include "byte_stream_test_harness.hh"
+
 #include <iostream>
 #include <random>
-
-#include "byte_stream_test_harness.hh"
 
 using namespace std;
 
@@ -21,7 +21,7 @@ void stress_test(const size_t input_len,   // NOLINT(bugprone-easily-swappable-p
   }();
 
   ByteStreamTestHarness bs {
-      "stress test input=" + to_string(input_len) + ", capacity=" + to_string(capacity), capacity};
+    "stress test input=" + to_string(input_len) + ", capacity=" + to_string(capacity), capacity};
 
   size_t expected_bytes_pushed {};
   size_t expected_bytes_popped {};
@@ -82,7 +82,7 @@ int main()
 {
   try {
     program_body();
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << "Exception: " << e.what() << "\n";
     return EXIT_FAILURE;
   }

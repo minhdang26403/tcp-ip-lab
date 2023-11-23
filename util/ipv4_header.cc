@@ -1,4 +1,5 @@
 #include "ipv4_header.hh"
+
 #include "checksum.hh"
 
 #include <arpa/inet.h>
@@ -9,7 +10,7 @@
 using namespace std;
 
 // Parse from string.
-void IPv4Header::parse(Parser &parser)
+void IPv4Header::parse(Parser& parser)
 {
   uint8_t first_byte {};
   parser.integer(first_byte);
@@ -50,7 +51,7 @@ void IPv4Header::parse(Parser &parser)
 }
 
 // Serialize the IPv4Header (does not recompute the checksum)
-void IPv4Header::serialize(Serializer &serializer) const
+void IPv4Header::serialize(Serializer& serializer) const
 {
   // consistency checks
   if (ver != 4) {
@@ -75,7 +76,10 @@ void IPv4Header::serialize(Serializer &serializer) const
   serializer.integer(dst);
 }
 
-uint16_t IPv4Header::payload_length() const { return len - 4 * hlen; }
+uint16_t IPv4Header::payload_length() const
+{
+  return len - 4 * hlen;
+}
 
 //! \details This value is needed when computing the checksum of an encapsulated TCP segment.
 //! ~~~{.txt}

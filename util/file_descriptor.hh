@@ -27,13 +27,14 @@ class FileDescriptor
     // Calls [close(2)](\ref man2::close) on FDWrapper::fd_
     void close();
 
-    template <typename T> T CheckSystemCall(std::string_view s_attempt, T return_value) const;
+    template<typename T>
+    T CheckSystemCall(std::string_view s_attempt, T return_value) const;
 
     // An FDWrapper cannot be copied or moved
-    FDWrapper(const FDWrapper &other) = delete;
-    FDWrapper &operator=(const FDWrapper &other) = delete;
-    FDWrapper(FDWrapper &&other) = delete;
-    FDWrapper &operator=(FDWrapper &&other) = delete;
+    FDWrapper(const FDWrapper& other) = delete;
+    FDWrapper& operator=(const FDWrapper& other) = delete;
+    FDWrapper(FDWrapper&& other) = delete;
+    FDWrapper& operator=(FDWrapper&& other) = delete;
   };
 
   // A reference-counted handle to a shared FDWrapper
@@ -50,7 +51,8 @@ protected:
   void register_read() { ++internal_fd_->read_count_; }   // increment read count
   void register_write() { ++internal_fd_->write_count_; } // increment write count
 
-  template <typename T> T CheckSystemCall(std::string_view s_attempt, T return_value) const;
+  template<typename T>
+  T CheckSystemCall(std::string_view s_attempt, T return_value) const;
 
 public:
   // Construct from a file descriptor number returned by the kernel
@@ -61,13 +63,13 @@ public:
   ~FileDescriptor() = default;
 
   // Read into `buffer`
-  void read(std::string &buffer);
-  void read(std::vector<std::unique_ptr<std::string>> &buffers);
+  void read(std::string& buffer);
+  void read(std::vector<std::unique_ptr<std::string>>& buffers);
 
   // Attempt to write a buffer
   // returns number of bytes written
   size_t write(std::string_view buffer);
-  size_t write(const std::vector<std::string_view> &buffers);
+  size_t write(const std::vector<std::string_view>& buffers);
 
   // Close the underlying file descriptor
   void close() { internal_fd_->close(); }
@@ -90,8 +92,8 @@ public:
 
   // Copy/move constructor/assignment operators
   // FileDescriptor can be moved, but cannot be copied implicitly (see duplicate())
-  FileDescriptor(const FileDescriptor &other) = delete;            // copy construction is forbidden
-  FileDescriptor &operator=(const FileDescriptor &other) = delete; // copy assignment is forbidden
-  FileDescriptor(FileDescriptor &&other) = default;                // move construction is allowed
-  FileDescriptor &operator=(FileDescriptor &&other) = default;     // move assignment is allowed
+  FileDescriptor(const FileDescriptor& other) = delete;            // copy construction is forbidden
+  FileDescriptor& operator=(const FileDescriptor& other) = delete; // copy assignment is forbidden
+  FileDescriptor(FileDescriptor&& other) = default;                // move construction is allowed
+  FileDescriptor& operator=(FileDescriptor&& other) = default;     // move assignment is allowed
 };

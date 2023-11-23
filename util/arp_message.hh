@@ -13,9 +13,9 @@ struct ARPMessage
   static constexpr uint16_t OPCODE_REPLY = 2;
 
   uint16_t hardware_type
-      = TYPE_ETHERNET; // Type of the link-layer protocol (generally Ethernet/Wi-Fi)
+    = TYPE_ETHERNET; // Type of the link-layer protocol (generally Ethernet/Wi-Fi)
   uint16_t protocol_type
-      = EthernetHeader::TYPE_IPv4; // Type of the Internet-layer protocol (generally IPv4)
+    = EthernetHeader::TYPE_IPv4; // Type of the Internet-layer protocol (generally IPv4)
   uint8_t hardware_address_size = sizeof(EthernetHeader::src);
   uint8_t protocol_address_size = sizeof(IPv4Header::src);
   uint16_t opcode {}; // Request or reply
@@ -32,6 +32,6 @@ struct ARPMessage
   // Is this type of ARP message supported by the parser?
   bool supported() const;
 
-  void parse(Parser &parser);
-  void serialize(Serializer &serializer) const;
+  void parse(Parser& parser);
+  void serialize(Serializer& serializer) const;
 };

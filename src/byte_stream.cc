@@ -1,4 +1,5 @@
 #include "byte_stream.hh"
+
 #include <algorithm>
 #include <cstdint>
 #include <string>
@@ -17,15 +18,30 @@ void Writer::push(string data)
   capacity_ -= count;
 }
 
-void Writer::close() { close_ = true; }
+void Writer::close()
+{
+  close_ = true;
+}
 
-void Writer::set_error() { error_ = true; }
+void Writer::set_error()
+{
+  error_ = true;
+}
 
-bool Writer::is_closed() const { return close_; }
+bool Writer::is_closed() const
+{
+  return close_;
+}
 
-uint64_t Writer::available_capacity() const { return capacity_; }
+uint64_t Writer::available_capacity() const
+{
+  return capacity_;
+}
 
-uint64_t Writer::bytes_pushed() const { return push_count_; }
+uint64_t Writer::bytes_pushed() const
+{
+  return push_count_;
+}
 
 string_view Reader::peek() const
 {
@@ -35,9 +51,15 @@ string_view Reader::peek() const
   return {byte_stream_};
 }
 
-bool Reader::is_finished() const { return close_ && byte_stream_.empty(); }
+bool Reader::is_finished() const
+{
+  return close_ && byte_stream_.empty();
+}
 
-bool Reader::has_error() const { return error_; }
+bool Reader::has_error() const
+{
+  return error_;
+}
 
 void Reader::pop(uint64_t len)
 {
@@ -49,6 +71,12 @@ void Reader::pop(uint64_t len)
   capacity_ += count;
 }
 
-uint64_t Reader::bytes_buffered() const { return byte_stream_.size(); }
+uint64_t Reader::bytes_buffered() const
+{
+  return byte_stream_.size();
+}
 
-uint64_t Reader::bytes_popped() const { return pop_count_; }
+uint64_t Reader::bytes_popped() const
+{
+  return pop_count_;
+}

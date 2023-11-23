@@ -13,16 +13,16 @@ struct IPv4Datagram
   IPv4Header header {};
   std::vector<Buffer> payload {};
 
-  void parse(Parser &parser)
+  void parse(Parser& parser)
   {
     header.parse(parser);
     parser.all_remaining(payload);
   }
 
-  void serialize(Serializer &serializer) const
+  void serialize(Serializer& serializer) const
   {
     header.serialize(serializer);
-    for (const auto &x : payload) {
+    for (const auto& x : payload) {
       serializer.buffer(x);
     }
   }

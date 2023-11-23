@@ -1,20 +1,19 @@
 #include "file_descriptor.hh"
 
+#include "exception.hh"
+
+#include <algorithm>
 #include <fcntl.h>
+#include <iostream>
+#include <stdexcept>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/uio.h>
 #include <unistd.h>
 
-#include <algorithm>
-#include <iostream>
-#include <stdexcept>
-
-#include "exception.hh"
-
 using namespace std;
 
-template <typename T>
+template<typename T>
 T FileDescriptor::FDWrapper::CheckSystemCall(string_view s_attempt, T return_value) const
 {
   if (return_value >= 0) {
@@ -28,7 +27,7 @@ T FileDescriptor::FDWrapper::CheckSystemCall(string_view s_attempt, T return_val
   throw unix_error {s_attempt};
 }
 
-template <typename T>
+template<typename T>
 T FileDescriptor::CheckSystemCall(std::string_view s_attempt, T return_value) const
 {
   if (not internal_fd_) {
@@ -61,7 +60,7 @@ FileDescriptor::FDWrapper::~FDWrapper()
       return;
     }
     close();
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     // don't throw an exception from the destructor
     cerr << "Exception destructing FDWrapper: " << e.what() << endl;
   }
@@ -72,14 +71,17 @@ FileDescriptor::FileDescriptor(int fd) : internal_fd_(make_shared<FDWrapper>(fd)
 
 // Private constructor used by duplicate()
 FileDescriptor::FileDescriptor(shared_ptr<FDWrapper> other_shared_ptr)
-    : internal_fd_(move(other_shared_ptr))
+  : internal_fd_(move(other_shared_ptr))
 {}
 
 // returns a copy of this FileDescriptor
-FileDescriptor FileDescriptor::duplicate() const { return FileDescriptor {internal_fd_}; }
+FileDescriptor FileDescriptor::duplicate() const
+{
+  return FileDescriptor {internal_fd_};
+}
 
 // buffer is the string to be read into
-void FileDescriptor::read(string &buffer)
+void FileDescriptor::read(string& buffer)
 {
   buffer.clear();
   buffer.resize(kReadBufferSize);
@@ -105,7 +107,7 @@ void FileDescriptor::read(string &buffer)
   buffer.resize(bytes_read);
 }
 
-void FileDescriptor::read(vector<unique_ptr<string>> &buffers)
+void FileDescriptor::read(vector<unique_ptr<string>>& buffers)
 {
   if (buffers.empty()) {
     return;
@@ -117,8 +119,8 @@ void FileDescriptor::read(vector<unique_ptr<string>> &buffers)
   vector<iovec> iovecs;
   iovecs.reserve(buffers.size());
   size_t total_size = 0;
-  for (const auto &x : buffers) {
-    iovecs.push_back({const_cast<char *>(x->data()), x->size()}); // NOLINT(*-const-cast)
+  for (const auto& x : buffers) {
+    iovecs.push_back({const_cast<char*>(x->data()), x->size()}); // NOLINT(*-const-cast)
     total_size += x->size();
   }
 
@@ -137,7 +139,7 @@ void FileDescriptor::read(vector<unique_ptr<string>> &buffers)
   }
 
   size_t remaining_size = bytes_read;
-  for (auto &buf : buffers) {
+  for (auto& buf : buffers) {
     if (remaining_size <= buf->size()) {
       remaining_size -= buf->size();
     } else if (remaining_size == 0) {
@@ -149,20 +151,23 @@ void FileDescriptor::read(vector<unique_ptr<string>> &buffers)
   }
 }
 
-size_t FileDescriptor::write(string_view buffer) { return write(vector<string_view> {buffer}); }
+size_t FileDescriptor::write(string_view buffer)
+{
+  return write(vector<string_view> {buffer});
+}
 
-size_t FileDescriptor::write(const vector<string_view> &buffers)
+size_t FileDescriptor::write(const vector<string_view>& buffers)
 {
   vector<iovec> iovecs;
   iovecs.reserve(buffers.size());
   size_t total_size = 0;
   for (const auto x : buffers) {
-    iovecs.push_back({const_cast<char *>(x.data()), x.size()}); // NOLINT(*-const-cast)
+    iovecs.push_back({const_cast<char*>(x.data()), x.size()}); // NOLINT(*-const-cast)
     total_size += x.size();
   }
 
-  const ssize_t bytes_written = CheckSystemCall(
-      "writev", ::writev(fd_num(), iovecs.data(), static_cast<int>(iovecs.size())));
+  const ssize_t bytes_written
+    = CheckSystemCall("writev", ::writev(fd_num(), iovecs.data(), static_cast<int>(iovecs.size())));
   register_write();
 
   if (bytes_written == 0 and total_size != 0) {

@@ -27,29 +27,29 @@ string EthernetHeader::to_string() const
   ss << ", src=" << ::to_string(src);
   ss << ", type=";
   switch (type) {
-  case TYPE_IPv4:
-    ss << "IPv4";
-    break;
-  case TYPE_ARP:
-    ss << "ARP";
-    break;
-  default:
-    ss << "[unknown type " << hex << type << "!]";
-    break;
+    case TYPE_IPv4:
+      ss << "IPv4";
+      break;
+    case TYPE_ARP:
+      ss << "ARP";
+      break;
+    default:
+      ss << "[unknown type " << hex << type << "!]";
+      break;
   }
 
   return ss.str();
 }
 
-void EthernetHeader::parse(Parser &parser)
+void EthernetHeader::parse(Parser& parser)
 {
   // read destination address
-  for (auto &b : dst) {
+  for (auto& b : dst) {
     parser.integer(b);
   }
 
   // read source address
-  for (auto &b : src) {
+  for (auto& b : src) {
     parser.integer(b);
   }
 
@@ -57,15 +57,15 @@ void EthernetHeader::parse(Parser &parser)
   parser.integer(type);
 }
 
-void EthernetHeader::serialize(Serializer &serializer) const
+void EthernetHeader::serialize(Serializer& serializer) const
 {
   // write destination address
-  for (const auto &b : dst) {
+  for (const auto& b : dst) {
     serializer.integer(b);
   }
 
   // write source address
-  for (const auto &b : src) {
+  for (const auto& b : src) {
     serializer.integer(b);
   }
 

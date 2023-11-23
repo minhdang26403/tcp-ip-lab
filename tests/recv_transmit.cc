@@ -105,7 +105,7 @@ int main()
       test.execute(ReadAll {std::move(all_data)});
     }
 
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << e.what() << endl;
     return 1;
   }

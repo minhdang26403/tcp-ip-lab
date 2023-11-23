@@ -26,17 +26,17 @@ public:
   explicit ByteStream(uint64_t capacity);
 
   // Helper functions (provided) to access the ByteStream's Reader and Writer interfaces
-  Reader &reader();
-  const Reader &reader() const;
-  Writer &writer();
-  const Writer &writer() const;
+  Reader& reader();
+  const Reader& reader() const;
+  Writer& writer();
+  const Writer& writer() const;
 };
 
 class Writer : public ByteStream
 {
 public:
-  void
-  push(std::string data); // Push data to stream, but only as much as available capacity allows.
+  void push(
+    std::string data); // Push data to stream, but only as much as available capacity allows.
 
   void close();     // Signal that the stream has reached its ending. Nothing more will be written.
   void set_error(); // Signal that the stream suffered an error.
@@ -63,4 +63,4 @@ public:
  * read: A (provided) helper function thats peeks and pops up to `len` bytes
  * from a ByteStream Reader into a string;
  */
-void read(Reader &reader, uint64_t len, std::string &out);
+void read(Reader& reader, uint64_t len, std::string& out);

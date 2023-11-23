@@ -24,7 +24,7 @@ int main()
       TCPSenderTestHarness test {"Repeat ACK is ignored", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectNoSegment {});
       test.execute(AckReceived {Wrap32 {isn + 1}});
       test.execute(Push {"a"});
@@ -42,7 +42,7 @@ int main()
       TCPSenderTestHarness test {"Old ACK is ignored", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectNoSegment {});
       test.execute(AckReceived {Wrap32 {isn + 1}});
       test.execute(Push {"a"});
@@ -66,12 +66,12 @@ int main()
       TCPSenderTestHarness test {"Impossible ackno (beyond next seqno) is ignored", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectSeqnosInFlight {1});
       test.execute(AckReceived {Wrap32 {isn + 2}}.with_win(1000));
       test.execute(ExpectSeqnosInFlight {1});
     }
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << e.what() << endl;
     return 1;
   }

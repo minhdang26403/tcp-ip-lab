@@ -1,12 +1,11 @@
 #pragma once
 
-#include <sys/socket.h>
+#include "address.hh"
+#include "file_descriptor.hh"
 
 #include <cstdint>
 #include <functional>
-
-#include "address.hh"
-#include "file_descriptor.hh"
+#include <sys/socket.h>
 
 //! \brief Base class for network sockets (TCP, UDP, etc.)
 //! \details Socket is generally used via a subclass. See TCPSocket and UDPSocket for usage
@@ -15,36 +14,36 @@ class Socket : public FileDescriptor
 {
 private:
   //! Get the local or peer address the socket is connected to
-  Address get_address(const std::string &name_of_function,
-                      const std::function<int(int, sockaddr *, socklen_t *)> &function) const;
+  Address get_address(const std::string& name_of_function,
+                      const std::function<int(int, sockaddr*, socklen_t*)>& function) const;
 
 protected:
   //! Construct via [socket(2)](\ref man2::socket)
   Socket(int domain, int type, int protocol = 0);
 
   //! Construct from a file descriptor.
-  Socket(FileDescriptor &&fd, int domain, int type, int protocol = 0);
+  Socket(FileDescriptor&& fd, int domain, int type, int protocol = 0);
 
   //! Wrapper around [getsockopt(2)](\ref man2::getsockopt)
-  template <typename option_type>
-  socklen_t getsockopt(int level, int option, option_type &option_value) const;
+  template<typename option_type>
+  socklen_t getsockopt(int level, int option, option_type& option_value) const;
 
   //! Wrappers around [setsockopt(2)](\ref man2::setsockopt)
-  template <typename option_type>
-  void setsockopt(int level, int option, const option_type &option_value);
+  template<typename option_type>
+  void setsockopt(int level, int option, const option_type& option_value);
 
   void setsockopt(int level, int option, std::string_view option_val);
 
 public:
   //! Bind a socket to a specified address with [bind(2)](\ref man2::bind), usually for
   //! listen/accept
-  void bind(const Address &address);
+  void bind(const Address& address);
 
   //! Bind a socket to a specified device
   void bind_to_device(std::string_view device_name);
 
   //! Connect a socket to a specified peer address with [connect(2)](\ref man2::connect)
-  void connect(const Address &address);
+  void connect(const Address& address);
 
   //! Shut down a socket via [shutdown(2)](\ref man2::shutdown)
   void shutdown(int how);
@@ -67,10 +66,10 @@ class DatagramSocket : public Socket
 
 public:
   //! Receive a datagram and the Address of its sender
-  void recv(Address &source_address, std::string &payload);
+  void recv(Address& source_address, std::string& payload);
 
   //! Send a datagram to specified Address
-  void sendto(const Address &destination, std::string_view payload);
+  void sendto(const Address& destination, std::string_view payload);
 
   //! Send datagram to the socket's connected address (must call connect() first)
   void send(std::string_view payload);
@@ -80,7 +79,7 @@ public:
 class UDPSocket : public DatagramSocket
 {
   //! \param[in] fd is the FileDescriptor from which to construct
-  explicit UDPSocket(FileDescriptor &&fd) : DatagramSocket(std::move(fd), AF_INET, SOCK_DGRAM) {}
+  explicit UDPSocket(FileDescriptor&& fd) : DatagramSocket(std::move(fd), AF_INET, SOCK_DGRAM) {}
 
 public:
   //! Default: construct an unbound, unconnected UDP socket
@@ -93,7 +92,7 @@ class TCPSocket : public Socket
 private:
   //! \brief Construct from FileDescriptor (used by accept())
   //! \param[in] fd is the FileDescriptor from which to construct
-  explicit TCPSocket(FileDescriptor &&fd) : Socket(std::move(fd), AF_INET, SOCK_STREAM) {}
+  explicit TCPSocket(FileDescriptor&& fd) : Socket(std::move(fd), AF_INET, SOCK_STREAM) {}
 
 public:
   //! Default: construct an unbound, unconnected TCP socket

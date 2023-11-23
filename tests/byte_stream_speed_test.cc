@@ -1,3 +1,5 @@
+#include "byte_stream.hh"
+
 #include <chrono>
 #include <cstddef>
 #include <fstream>
@@ -5,8 +7,6 @@
 #include <iostream>
 #include <queue>
 #include <random>
-
-#include "byte_stream.hh"
 
 using namespace std;
 using namespace std::chrono;
@@ -87,13 +87,16 @@ void speed_test(const size_t input_len,   // NOLINT(bugprone-easily-swappable-pa
   }
 }
 
-void program_body() { speed_test(1e7, 32768, 789, 1500, 128); }
+void program_body()
+{
+  speed_test(1e7, 32768, 789, 1500, 128);
+}
 
 int main()
 {
   try {
     program_body();
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << "Exception: " << e.what() << "\n";
     return EXIT_FAILURE;
   }

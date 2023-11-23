@@ -14,7 +14,7 @@ const unsigned int DEFAULT_TEST_WINDOW = 137;
 
 using StreamAndSender = std::pair<ByteStream, TCPSender>;
 
-static std::string to_string(const TCPSenderMessage &msg)
+static std::string to_string(const TCPSenderMessage& msg)
 {
   std::ostringstream o;
   o << "(";
@@ -37,7 +37,7 @@ struct ExpectSeqno : public ExpectNumber<StreamAndSender, Wrap32>
   using ExpectNumber::ExpectNumber;
   std::string name() const override { return "send_empty_message().seqno"; }
 
-  Wrap32 value(StreamAndSender &ss) const override
+  Wrap32 value(StreamAndSender& ss) const override
   {
     auto seg = ss.second.send_empty_message();
     if (seg.sequence_length()) {
@@ -51,7 +51,7 @@ struct ExpectSeqnosInFlight : public ExpectNumber<StreamAndSender, uint64_t>
 {
   using ExpectNumber::ExpectNumber;
   std::string name() const override { return "sequence_numbers_in_flight"; }
-  uint64_t value(StreamAndSender &ss) const override
+  uint64_t value(StreamAndSender& ss) const override
   {
     return ss.second.sequence_numbers_in_flight();
   }
@@ -60,7 +60,7 @@ struct ExpectSeqnosInFlight : public ExpectNumber<StreamAndSender, uint64_t>
 struct ExpectNoSegment : public Expectation<StreamAndSender>
 {
   std::string description() const override { return "nothing to send"; }
-  void execute(StreamAndSender &ss) const override
+  void execute(StreamAndSender& ss) const override
   {
     const auto msg = ss.second.maybe_send();
     if (msg.has_value()) {
@@ -89,7 +89,7 @@ struct Push : public Action<StreamAndSender>
     return "push \"" + Printer::prettify(data_) + "\" to stream" + (close_ ? ", close it" : "")
            + ", then push to TCPSender";
   }
-  void execute(StreamAndSender &ss) const override
+  void execute(StreamAndSender& ss) const override
   {
     if (not data_.empty()) {
       ss.first.writer().push(data_);
@@ -100,7 +100,7 @@ struct Push : public Action<StreamAndSender>
     ss.second.push(ss.first.reader());
   }
 
-  Push &with_close()
+  Push& with_close()
   {
     close_ = true;
     return *this;
@@ -114,7 +114,7 @@ struct Tick : public Action<StreamAndSender>
 
   explicit Tick(uint64_t ms) : ms_(ms) {}
 
-  Tick &with_max_retx_exceeded(bool val)
+  Tick& with_max_retx_exceeded(bool val)
   {
     max_retx_exceeded_ = val;
     return *this;
@@ -130,12 +130,12 @@ struct Tick : public Action<StreamAndSender>
     return desc.str();
   }
 
-  void execute(StreamAndSender &ss) const override
+  void execute(StreamAndSender& ss) const override
   {
     ss.second.tick(ms_);
     if (max_retx_exceeded_.has_value()
         and max_retx_exceeded_
-                != (ss.second.consecutive_retransmissions() > TCPConfig::MAX_RETX_ATTEMPTS)) {
+              != (ss.second.consecutive_retransmissions() > TCPConfig::MAX_RETX_ATTEMPTS)) {
       std::ostringstream desc;
       desc << "after " << ms_
            << " ms passed the TCP Sender reported\n\tconsecutive_retransmissions = "
@@ -167,13 +167,13 @@ struct Receive : public Action<StreamAndSender>
     return desc.str();
   }
 
-  Receive &with_win(uint16_t win)
+  Receive& with_win(uint16_t win)
   {
     msg_.window_size = win;
     return *this;
   }
 
-  void execute(StreamAndSender &ss) const override
+  void execute(StreamAndSender& ss) const override
   {
     ss.second.receive(msg_);
     if (push_) {
@@ -181,7 +181,7 @@ struct Receive : public Action<StreamAndSender>
     }
   }
 
-  Receive &without_push()
+  Receive& without_push()
   {
     push_ = false;
     return *this;
@@ -206,40 +206,40 @@ struct ExpectMessage : public Expectation<StreamAndSender>
   std::optional<std::string> data {};
   std::optional<size_t> payload_size {};
 
-  ExpectMessage &with_syn(bool syn_)
+  ExpectMessage& with_syn(bool syn_)
   {
     syn = syn_;
     return *this;
   }
 
-  ExpectMessage &with_fin(bool fin_)
+  ExpectMessage& with_fin(bool fin_)
   {
     fin = fin_;
     return *this;
   }
 
-  ExpectMessage &with_no_flags()
+  ExpectMessage& with_no_flags()
   {
     syn = false;
     fin = false;
     return *this;
   }
 
-  ExpectMessage &with_seqno(Wrap32 seqno_)
+  ExpectMessage& with_seqno(Wrap32 seqno_)
   {
     seqno = seqno_;
     return *this;
   }
 
-  ExpectMessage &with_seqno(uint32_t seqno_) { return with_seqno(Wrap32 {seqno_}); }
+  ExpectMessage& with_seqno(uint32_t seqno_) { return with_seqno(Wrap32 {seqno_}); }
 
-  ExpectMessage &with_payload_size(size_t payload_size_)
+  ExpectMessage& with_payload_size(size_t payload_size_)
   {
     payload_size = payload_size_;
     return *this;
   }
 
-  ExpectMessage &with_data(std::string data_)
+  ExpectMessage& with_data(std::string data_)
   {
     data = std::move(data_);
     return *this;
@@ -272,7 +272,7 @@ struct ExpectMessage : public Expectation<StreamAndSender>
 
   std::string description() const override { return "message sent with" + message_description(); }
 
-  void execute(StreamAndSender &ss) const override
+  void execute(StreamAndSender& ss) const override
   {
     if (payload_size.has_value() and data.has_value()
         and payload_size.value() != data.value().size()) {
@@ -283,7 +283,7 @@ struct ExpectMessage : public Expectation<StreamAndSender>
     if (not maybe_seg.has_value()) {
       throw ExpectationViolation("expected a message, but none was sent");
     }
-    const TCPSenderMessage &seg = maybe_seg.value();
+    const TCPSenderMessage& seg = maybe_seg.value();
 
     if (syn.has_value() and seg.SYN != syn.value()) {
       throw ExpectationViolation("SYN flag", syn.value(), seg.SYN);
@@ -313,8 +313,9 @@ class TCPSenderTestHarness : public TestHarness<StreamAndSender>
 {
 public:
   TCPSenderTestHarness(std::string name, TCPConfig config)
-      : TestHarness(
-          move(name), "initial_RTO_ms=" + to_string(config.rt_timeout),
-          {ByteStream {config.send_capacity}, TCPSender {config.rt_timeout, config.fixed_isn}})
+    : TestHarness(
+      move(name),
+      "initial_RTO_ms=" + to_string(config.rt_timeout),
+      {ByteStream {config.send_capacity}, TCPSender {config.rt_timeout, config.fixed_isn}})
   {}
 };

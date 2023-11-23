@@ -29,13 +29,13 @@ public:
    *
    * The Reassembler should close the stream after writing the last byte.
    */
-  void insert(uint64_t first_index, std::string data, bool is_last_substring, Writer &output);
+  void insert(uint64_t first_index, std::string data, bool is_last_substring, Writer& output);
 
   // How many bytes are stored in the Reassembler itself?
   uint64_t bytes_pending() const;
 
 private:
-  void try_close_stream(Writer &output) const;
+  void try_close_stream(Writer& output) const;
 
   uint64_t first_unassembled_index_ {};
   std::map<uint64_t, std::string> buffer_ {};

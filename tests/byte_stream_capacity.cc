@@ -1,8 +1,8 @@
-#include <exception>
-#include <iostream>
-
 #include "byte_stream.hh"
 #include "byte_stream_test_harness.hh"
+
+#include <exception>
+#include <iostream>
 
 using namespace std;
 
@@ -97,7 +97,7 @@ int main()
       test.execute(BytesBuffered {1});
     }
 
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << "Exception: " << e.what() << endl;
     return EXIT_FAILURE;
   }

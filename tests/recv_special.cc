@@ -111,10 +111,10 @@ int main()
       TCPReceiverTestHarness test {"segment with SYN + payload + FIN", 4000};
       test.execute(HasAckno {false});
       test.execute(SegmentArrives {}
-                       .with_syn()
-                       .with_seqno(isn)
-                       .with_data("Hello and goodbye, CS144!")
-                       .with_fin());
+                     .with_syn()
+                     .with_seqno(isn)
+                     .with_data("Hello and goodbye, CS144!")
+                     .with_fin());
       test.execute(IsClosed {true});
       test.execute(ExpectAckno {Wrap32 {isn + 27}});
       test.execute(BytesPending {0});
@@ -172,9 +172,8 @@ int main()
       test.execute(SegmentArrives {}.with_syn().with_seqno(isn));
       vector<uint8_t> bytes = {'j', 'i', 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a'};
       for (int i = cap - 1; i >= 1; --i) {
-        test.execute(SegmentArrives {}
-                         .with_seqno(isn + i + 1)
-                         .with_data(std::string(1, bytes[cap - i - 1])));
+        test.execute(
+          SegmentArrives {}.with_seqno(isn + i + 1).with_data(std::string(1, bytes[cap - i - 1])));
         test.execute(ExpectAckno {Wrap32 {isn + 1}});
         test.execute(BytesPushed {0});
         test.execute(ExpectWindow {10});
@@ -185,7 +184,7 @@ int main()
       test.execute(ExpectAckno {Wrap32 {static_cast<uint32_t>(isn + bytes.size() + 1)}});
       test.execute(ReadAll {"abcdefghij"});
     }
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << e.what() << endl;
     return 1;
   }

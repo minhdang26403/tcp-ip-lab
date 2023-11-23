@@ -1,6 +1,5 @@
-#include "sender_test_harness.hh"
-
 #include "random.hh"
+#include "sender_test_harness.hh"
 
 #include <cstdint>
 #include <cstdlib>
@@ -25,7 +24,7 @@ int main()
       TCPSenderTestHarness test {"SYN sent after first push", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {1});
     }
@@ -38,7 +37,7 @@ int main()
       TCPSenderTestHarness test {"SYN acked test", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {1});
       test.execute(AckReceived {isn + 1});
@@ -54,7 +53,7 @@ int main()
       TCPSenderTestHarness test {"SYN -> wrong ack test", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {1});
       test.execute(AckReceived {isn});
@@ -71,7 +70,7 @@ int main()
       TCPSenderTestHarness test {"SYN acked, data", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {1});
       test.execute(AckReceived {isn + 1});
@@ -88,7 +87,7 @@ int main()
       test.execute(ExpectSeqno {isn + 9});
     }
 
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << e.what() << endl;
     return 1;
   }

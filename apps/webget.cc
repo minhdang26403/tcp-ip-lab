@@ -1,20 +1,20 @@
+#include "socket.hh"
+
 #include <cstdlib>
 #include <iostream>
 #include <span>
 #include <string>
 
-#include "socket.hh"
-
 using namespace std;
 
-void get_URL(const string &host, const string &path)
+void get_URL(const string& host, const string& path)
 {
   TCPSocket client_socket {};
   const Address server_address {host, "http"};
   client_socket.connect(server_address);
 
   const string message
-      = "GET " + path + " HTTP/1.1\r\nHost: " + host + "\r\nConnection: close\r\n\r\n";
+    = "GET " + path + " HTTP/1.1\r\nHost: " + host + "\r\nConnection: close\r\n\r\n";
   client_socket.write(message);
 
   string buffer;
@@ -24,7 +24,7 @@ void get_URL(const string &host, const string &path)
   }
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
   try {
     if (argc <= 0) {
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 
     // Call the student-written function.
     get_URL(host, path);
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << e.what() << "\n";
     return EXIT_FAILURE;
   }

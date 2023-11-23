@@ -24,7 +24,7 @@ int main()
       TCPSenderTestHarness test {"Three short writes", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {1});
       test.execute(AckReceived {Wrap32 {isn + 1}});
@@ -48,7 +48,7 @@ int main()
       TCPSenderTestHarness test {"Many short writes, continuous acks", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(AckReceived {Wrap32 {isn + 1}});
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {0});
@@ -67,8 +67,8 @@ int main()
         bytes_sent += block_size;
         test.execute(ExpectSeqnosInFlight {block_size});
         test.execute(ExpectMessage {}
-                         .with_seqno(isn + 1 + static_cast<uint32_t>(bytes_sent - block_size))
-                         .with_data(move(data)));
+                       .with_seqno(isn + 1 + static_cast<uint32_t>(bytes_sent - block_size))
+                       .with_data(move(data)));
         test.execute(ExpectNoSegment {});
         test.execute(AckReceived {Wrap32 {isn + 1 + static_cast<uint32_t>(bytes_sent)}});
       }
@@ -82,7 +82,7 @@ int main()
       TCPSenderTestHarness test {"Many short writes, ack at end", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {1});
       test.execute(AckReceived {isn + 1}.with_win(65000));
@@ -103,8 +103,8 @@ int main()
         bytes_sent += block_size;
         test.execute(ExpectSeqnosInFlight {bytes_sent});
         test.execute(ExpectMessage {}
-                         .with_seqno(isn + 1 + static_cast<uint32_t>(bytes_sent - block_size))
-                         .with_data(move(data)));
+                       .with_seqno(isn + 1 + static_cast<uint32_t>(bytes_sent - block_size))
+                       .with_data(move(data)));
         test.execute(ExpectNoSegment {});
       }
       test.execute(ExpectSeqnosInFlight {bytes_sent});
@@ -120,7 +120,7 @@ int main()
       TCPSenderTestHarness test {"Window filling", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {1});
       test.execute(AckReceived {Wrap32 {isn + 1}}.with_win(3));
@@ -154,7 +154,7 @@ int main()
       TCPSenderTestHarness test {"Immediate writes respect the window", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {1});
       test.execute(AckReceived {Wrap32 {isn + 1}}.with_win(3));
@@ -172,7 +172,7 @@ int main()
       test.execute(ExpectSeqno {Wrap32 {isn + 1 + 3}});
     }
 
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << e.what() << endl;
     return 1;
   }

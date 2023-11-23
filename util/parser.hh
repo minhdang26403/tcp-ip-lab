@@ -26,9 +26,9 @@ class Parser
 
   public:
     // NOLINTNEXTLINE(*-explicit-*)
-    BufferList(const std::vector<Buffer> &buffers)
+    BufferList(const std::vector<Buffer>& buffers)
     {
-      for (const auto &x : buffers) {
+      for (const auto& x : buffers) {
         append(x);
       }
     }
@@ -59,7 +59,7 @@ class Parser
       }
     }
 
-    void dump_all(std::vector<Buffer> &out)
+    void dump_all(std::vector<Buffer>& out)
     {
       out.clear();
       if (empty()) {
@@ -71,12 +71,12 @@ class Parser
       }
       out.emplace_back(std::move(first_str));
       buffer_.pop_front();
-      for (auto &&x : buffer_) {
+      for (auto&& x : buffer_) {
         out.emplace_back(std::move(x));
       }
     }
 
-    void dump_all(Buffer &out)
+    void dump_all(Buffer& out)
     {
       std::vector<Buffer> concat;
       dump_all(concat);
@@ -86,7 +86,7 @@ class Parser
       }
 
       out.release().clear();
-      for (const auto &s : concat) {
+      for (const auto& s : concat) {
         out.release().append(s);
       }
     }
@@ -109,15 +109,16 @@ class Parser
   }
 
 public:
-  explicit Parser(const std::vector<Buffer> &input) : input_(input) {}
+  explicit Parser(const std::vector<Buffer>& input) : input_(input) {}
 
-  const BufferList &input() const { return input_; }
+  const BufferList& input() const { return input_; }
 
   bool has_error() const { return error_; }
   void set_error() { error_ = true; }
   void remove_prefix(size_t n) { input_.remove_prefix(n); }
 
-  template <std::unsigned_integral T> void integer(T &out)
+  template<std::unsigned_integral T>
+  void integer(T& out)
   {
     check_size(sizeof(T));
     if (has_error()) {
@@ -147,8 +148,8 @@ public:
     }
   }
 
-  void all_remaining(std::vector<Buffer> &out) { input_.dump_all(out); }
-  void all_remaining(Buffer &out) { input_.dump_all(out); }
+  void all_remaining(std::vector<Buffer>& out) { input_.dump_all(out); }
+  void all_remaining(Buffer& out) { input_.dump_all(out); }
 };
 
 class Serializer
@@ -158,9 +159,10 @@ class Serializer
 
 public:
   Serializer() = default;
-  explicit Serializer(std::string &&buffer) : buffer_(std::move(buffer)) {}
+  explicit Serializer(std::string&& buffer) : buffer_(std::move(buffer)) {}
 
-  template <std::unsigned_integral T> void integer(const T &val)
+  template<std::unsigned_integral T>
+  void integer(const T& val)
   {
     constexpr uint64_t len = sizeof(T);
 
@@ -170,15 +172,15 @@ public:
     }
   }
 
-  void buffer(const Buffer &buf)
+  void buffer(const Buffer& buf)
   {
     flush();
     output_.push_back(buf);
   }
 
-  void buffer(const std::vector<Buffer> &bufs)
+  void buffer(const std::vector<Buffer>& bufs)
   {
-    for (const auto &b : bufs) {
+    for (const auto& b : bufs) {
       buffer(b);
     }
   }
@@ -197,7 +199,8 @@ public:
 };
 
 // Helper to serialize any object (without constructing a Serializer of the caller's own)
-template <class T> std::vector<Buffer> serialize(const T &obj)
+template<class T>
+std::vector<Buffer> serialize(const T& obj)
 {
   Serializer s;
   obj.serialize(s);
@@ -206,7 +209,8 @@ template <class T> std::vector<Buffer> serialize(const T &obj)
 
 // Helper to parse any object (without constructing a Parser of the caller's own). Returns true if
 // successful.
-template <class T> bool parse(T &obj, const std::vector<Buffer> &buffers)
+template<class T>
+bool parse(T& obj, const std::vector<Buffer>& buffers)
 {
   Parser p {buffers};
   obj.parse(p);

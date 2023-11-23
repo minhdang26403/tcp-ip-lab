@@ -1,14 +1,14 @@
 #include "reassembler.hh"
 
+#include "byte_stream.hh"
+
 #include <cstdint>
 #include <string>
 #include <utility>
 
-#include "byte_stream.hh"
-
 using namespace std;
 
-void Reassembler::insert(uint64_t first_index, string data, bool is_last_substring, Writer &output)
+void Reassembler::insert(uint64_t first_index, string data, bool is_last_substring, Writer& output)
 {
   const uint64_t available_capacity = output.available_capacity();
   const uint64_t first_unacceptable_index = first_unassembled_index_ + available_capacity;
@@ -68,7 +68,7 @@ void Reassembler::insert(uint64_t first_index, string data, bool is_last_substri
   // Check the segment(s) after this new segment
   while (it != buffer_.end() && it->first <= last_index) {
     const uint64_t cur_first_index = it->first;
-    const string &cur_data = it->second;
+    const string& cur_data = it->second;
     if (cur_first_index + cur_data.size() - 1 <= last_index) {
       // The current segment is covered by the new segment
       num_bytes_pending_ -= cur_data.size();
@@ -86,7 +86,7 @@ void Reassembler::insert(uint64_t first_index, string data, bool is_last_substri
   num_bytes_pending_ += data.size();
 
   while (!buffer_.empty() && buffer_.begin()->first == first_unassembled_index_) {
-    auto &[_, bytes] = *buffer_.begin();
+    auto& [_, bytes] = *buffer_.begin();
     num_bytes_pending_ -= bytes.size();
     first_unassembled_index_ += bytes.size();
     output.push(std::move(bytes));
@@ -96,9 +96,12 @@ void Reassembler::insert(uint64_t first_index, string data, bool is_last_substri
   try_close_stream(output);
 }
 
-uint64_t Reassembler::bytes_pending() const { return num_bytes_pending_; }
+uint64_t Reassembler::bytes_pending() const
+{
+  return num_bytes_pending_;
+}
 
-void Reassembler::try_close_stream(Writer &output) const
+void Reassembler::try_close_stream(Writer& output) const
 {
   if (eof_ && bytes_pending() == 0) {
     output.close();

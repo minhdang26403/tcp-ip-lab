@@ -46,7 +46,7 @@ int main()
       check_roundtrip(isn, val + big_offset, val);
       check_roundtrip(isn, val - big_offset, val);
     }
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << e.what() << endl;
     return 1;
   }

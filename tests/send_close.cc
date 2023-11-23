@@ -24,7 +24,7 @@ int main()
       TCPSenderTestHarness test {"FIN sent test", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(AckReceived {Wrap32 {isn + 1}});
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {0});
@@ -43,7 +43,7 @@ int main()
       TCPSenderTestHarness test {"FIN with data", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(AckReceived {Wrap32 {isn + 1}});
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {0});
@@ -63,7 +63,7 @@ int main()
       test.execute(Receive {{{}, 1024}}.without_push());
       test.execute(Close {});
       test.execute(
-          ExpectMessage {}.with_syn(true).with_payload_size(0).with_seqno(isn).with_fin(true));
+        ExpectMessage {}.with_syn(true).with_payload_size(0).with_seqno(isn).with_fin(true));
       test.execute(ExpectSeqno {isn + 2});
       test.execute(ExpectSeqnosInFlight {2});
       test.execute(ExpectNoSegment {});
@@ -77,7 +77,7 @@ int main()
       TCPSenderTestHarness test {"FIN acked test", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(AckReceived {Wrap32 {isn + 1}});
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {0});
@@ -98,7 +98,7 @@ int main()
       TCPSenderTestHarness test {"FIN not acked test", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(AckReceived {Wrap32 {isn + 1}});
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {0});
@@ -120,7 +120,7 @@ int main()
       TCPSenderTestHarness test {"FIN retx test", cfg};
       test.execute(Push {});
       test.execute(
-          ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
+        ExpectMessage {}.with_no_flags().with_syn(true).with_payload_size(0).with_seqno(isn));
       test.execute(AckReceived {Wrap32 {isn + 1}});
       test.execute(ExpectSeqno {isn + 1});
       test.execute(ExpectSeqnosInFlight {0});
@@ -151,7 +151,7 @@ int main()
       test.execute(ExpectNoSegment {});
     }
 
-  } catch (const exception &e) {
+  } catch (const exception& e) {
     cerr << e.what() << endl;
     return 1;
   }

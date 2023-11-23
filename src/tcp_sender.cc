@@ -1,4 +1,5 @@
 #include "tcp_sender.hh"
+
 #include "tcp_config.hh"
 
 #include <random>
@@ -11,7 +12,7 @@ void CountdownTimer::start(uint64_t start_time)
   state_ = State::RUNNING;
 }
 
-void CountdownTimer::tick(uint64_t ms_since_last_tictk)
+void CountdownTimer::tick(uint64_t ms_since_last_tick)
 {
   if (state_ != State::RUNNING) {
     return;

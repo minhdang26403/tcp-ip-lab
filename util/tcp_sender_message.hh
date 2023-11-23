@@ -1,9 +1,9 @@
 #pragma once
 
-#include <string>
-
 #include "buffer.hh"
 #include "wrapping_integers.hh"
+
+#include <string>
 
 /*
  * The TCPSenderMessage structure contains the information sent from a TCP sender to its receiver.

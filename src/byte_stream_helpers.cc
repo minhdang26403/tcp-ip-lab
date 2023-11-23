@@ -1,14 +1,14 @@
+#include "byte_stream.hh"
+
 #include <cstdint>
 #include <stdexcept>
 #include <string>
-
-#include "byte_stream.hh"
 
 /*
  * read: A helper function thats peeks and pops up to `len` bytes
  * from a ByteStream Reader into a string;
  */
-void read(Reader &reader, uint64_t len, std::string &out)
+void read(Reader& reader, uint64_t len, std::string& out)
 {
   out.clear();
 
@@ -25,34 +25,34 @@ void read(Reader &reader, uint64_t len, std::string &out)
   }
 }
 
-Reader &ByteStream::reader()
+Reader& ByteStream::reader()
 {
   static_assert(sizeof(Reader) == sizeof(ByteStream),
                 "Please add member variables to the ByteStream base, not the ByteStream Reader.");
 
-  return static_cast<Reader &>(*this); // NOLINT(*-downcast)
+  return static_cast<Reader&>(*this); // NOLINT(*-downcast)
 }
 
-const Reader &ByteStream::reader() const
+const Reader& ByteStream::reader() const
 {
   static_assert(sizeof(Reader) == sizeof(ByteStream),
                 "Please add member variables to the ByteStream base, not the ByteStream Reader.");
 
-  return static_cast<const Reader &>(*this); // NOLINT(*-downcast)
+  return static_cast<const Reader&>(*this); // NOLINT(*-downcast)
 }
 
-Writer &ByteStream::writer()
+Writer& ByteStream::writer()
 {
   static_assert(sizeof(Writer) == sizeof(ByteStream),
                 "Please add member variables to the ByteStream base, not the ByteStream Writer.");
 
-  return static_cast<Writer &>(*this); // NOLINT(*-downcast)
+  return static_cast<Writer&>(*this); // NOLINT(*-downcast)
 }
 
-const Writer &ByteStream::writer() const
+const Writer& ByteStream::writer() const
 {
   static_assert(sizeof(Writer) == sizeof(ByteStream),
                 "Please add member variables to the ByteStream base, not the ByteStream Writer.");
 
-  return static_cast<const Writer &>(*this); // NOLINT(*-downcast)
+  return static_cast<const Writer&>(*this); // NOLINT(*-downcast)
 }
