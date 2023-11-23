@@ -172,7 +172,7 @@ int main()
       test.execute(ExpectSeqno {Wrap32 {isn + 1 + 3}});
     }
 
-  } catch (const exception& e) {
+  } catch (const exception &e) {
     cerr << e.what() << endl;
     return 1;
   }

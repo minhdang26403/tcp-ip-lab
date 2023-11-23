@@ -151,7 +151,7 @@ int main()
       test.execute(ExpectNoSegment {});
     }
 
-  } catch (const exception& e) {
+  } catch (const exception &e) {
     cerr << e.what() << endl;
     return 1;
   }

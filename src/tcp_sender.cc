@@ -18,7 +18,7 @@ uint64_t TCPSender::consecutive_retransmissions() const
   return consecutive_retransmission_count_;
 }
 
-void log(const Buffer& payload) { cout << static_cast<string>(payload) << '\n'; }
+void log(const Buffer &payload) { cout << static_cast<string>(payload) << '\n'; }
 
 optional<TCPSenderMessage> TCPSender::maybe_send()
 {
@@ -30,10 +30,14 @@ optional<TCPSenderMessage> TCPSender::maybe_send()
     return msg;
   }
 
-  if (msg_queue_.empty()) { return optional<TCPSenderMessage> {}; }
+  if (msg_queue_.empty()) {
+    return optional<TCPSenderMessage> {};
+  }
 
   TCPSenderMessage msg = msg_queue_.front();
-  if (!fit_in_window(msg)) { return optional<TCPSenderMessage> {}; }
+  if (!fit_in_window(msg)) {
+    return optional<TCPSenderMessage> {};
+  }
 
   if (!timer_.running()) {
     // cout << "start timer with " << RTO_ms_ << '\n';
@@ -48,7 +52,7 @@ optional<TCPSenderMessage> TCPSender::maybe_send()
   return msg;
 }
 
-void TCPSender::push(Reader& outbound_stream)
+void TCPSender::push(Reader &outbound_stream)
 {
   if (!send_SYN_) {
     send_SYN_ = true;
@@ -88,7 +92,9 @@ void TCPSender::push(Reader& outbound_stream)
     msg.payload = Buffer {payload};
     if (msg.payload.length() < max_possible_segment_size) {
       msg.FIN = outbound_stream.is_finished();
-      if (msg.FIN) { receive_FIN_ = true; }
+      if (msg.FIN) {
+        receive_FIN_ = true;
+      }
     }
     abs_seqno_ += msg.sequence_length();
     msg_queue_.push(msg);
@@ -102,14 +108,16 @@ TCPSenderMessage TCPSender::send_empty_message() const
   return msg;
 }
 
-void TCPSender::receive(const TCPReceiverMessage& msg)
+void TCPSender::receive(const TCPReceiverMessage &msg)
 {
   window_size_ = msg.window_size;
   if (msg.ackno.has_value()) {
     // the ackno reflects an absolute sequence number bigger than
     // any previous ackno
     uint64_t new_ackno = msg.ackno.value().unwrap(isn_, abs_seqno_);
-    if (new_ackno > abs_seqno_ || new_ackno <= ackno_ || !acknos_.count(new_ackno)) { return; }
+    if (new_ackno > abs_seqno_ || new_ackno <= ackno_ || !acknos_.count(new_ackno)) {
+      return;
+    }
     // if (new_ackno != ackno_ + outstanding_msgs_.front().sequence_length()) {
     //   return;
     // }
@@ -140,7 +148,7 @@ void TCPSender::tick(const size_t ms_since_last_tick)
   }
 }
 
-bool TCPSender::fit_in_window(const TCPSenderMessage& msg) const
+bool TCPSender::fit_in_window(const TCPSenderMessage &msg) const
 {
   Wrap32 last_seqno = msg.seqno + msg.sequence_length();
   // When the window size is zero, this method pretends like

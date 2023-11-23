@@ -71,7 +71,7 @@ int main()
       test.execute(AckReceived {Wrap32 {isn + 2}}.with_win(1000));
       test.execute(ExpectSeqnosInFlight {1});
     }
-  } catch (const exception& e) {
+  } catch (const exception &e) {
     cerr << e.what() << endl;
     return 1;
   }

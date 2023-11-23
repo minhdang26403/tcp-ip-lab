@@ -12,16 +12,16 @@ using namespace std;
 EthernetAddress random_private_ethernet_address()
 {
   EthernetAddress addr;
-  for (auto& byte : addr) {
-    byte = random_device()();  // use a random local Ethernet address
+  for (auto &byte : addr) {
+    byte = random_device()(); // use a random local Ethernet address
   }
-  addr.at(0) |= 0x02;  // "10" in last two binary digits marks a private Ethernet address
+  addr.at(0) |= 0x02; // "10" in last two binary digits marks a private Ethernet address
   addr.at(0) &= 0xfe;
 
   return addr;
 }
 
-InternetDatagram make_datagram(const string& src_ip, const string& dst_ip)  // NOLINT(*-swappable-*)
+InternetDatagram make_datagram(const string &src_ip, const string &dst_ip) // NOLINT(*-swappable-*)
 {
   InternetDatagram dgram;
   dgram.header.src = Address(src_ip, 0).ipv4_numeric();
@@ -33,8 +33,8 @@ InternetDatagram make_datagram(const string& src_ip, const string& dst_ip)  // N
 }
 
 ARPMessage make_arp(const uint16_t opcode, const EthernetAddress sender_ethernet_address,
-                    const string& sender_ip_address, const EthernetAddress target_ethernet_address,
-                    const string& target_ip_address)
+                    const string &sender_ip_address, const EthernetAddress target_ethernet_address,
+                    const string &target_ip_address)
 {
   ARPMessage arp;
   arp.opcode = opcode;
@@ -45,7 +45,7 @@ ARPMessage make_arp(const uint16_t opcode, const EthernetAddress sender_ethernet
   return arp;
 }
 
-EthernetFrame make_frame(const EthernetAddress& src, const EthernetAddress& dst,
+EthernetFrame make_frame(const EthernetAddress &src, const EthernetAddress &dst,
                          const uint16_t type, vector<Buffer> payload)
 {
   EthernetFrame frame;
@@ -294,7 +294,7 @@ int main()
           serialize(make_arp(ARPMessage::OPCODE_REQUEST, local_eth, "10.0.0.1", {}, "10.0.0.5")))});
       test.execute(ExpectNoFrame {});
     }
-  } catch (const exception& e) {
+  } catch (const exception &e) {
     cerr << e.what() << endl;
     return EXIT_FAILURE;
   }

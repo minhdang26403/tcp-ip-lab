@@ -13,16 +13,18 @@
 using namespace std;
 using namespace std::chrono;
 
-void speed_test(const size_t num_chunks,   // NOLINT(bugprone-easily-swappable-parameters)
-                const size_t capacity,     // NOLINT(bugprone-easily-swappable-parameters)
-                const size_t random_seed)  // NOLINT(bugprone-easily-swappable-parameters)
+void speed_test(const size_t num_chunks,  // NOLINT(bugprone-easily-swappable-parameters)
+                const size_t capacity,    // NOLINT(bugprone-easily-swappable-parameters)
+                const size_t random_seed) // NOLINT(bugprone-easily-swappable-parameters)
 {
   // Generate the data to be written
   const string data = [&] {
     default_random_engine rd {random_seed};
     uniform_int_distribution<char> ud;
     string ret;
-    for (size_t i = 0; i < num_chunks * capacity; ++i) { ret += ud(rd); }
+    for (size_t i = 0; i < num_chunks * capacity; ++i) {
+      ret += ud(rd);
+    }
     return ret;
   }();
 
@@ -44,7 +46,7 @@ void speed_test(const size_t num_chunks,   // NOLINT(bugprone-easily-swappable-p
 
   const auto start_time = steady_clock::now();
   while (not split_data.empty()) {
-    auto& next = split_data.front();
+    auto &next = split_data.front();
     reassembler.insert(get<uint64_t>(next), move(get<string>(next)), get<bool>(next),
                        stream.writer());
     split_data.pop();
@@ -61,7 +63,9 @@ void speed_test(const size_t num_chunks,   // NOLINT(bugprone-easily-swappable-p
     throw runtime_error("Reassembler did not close ByteStream when finished");
   }
 
-  if (data != output_data) { throw runtime_error("Mismatch between data written and read"); }
+  if (data != output_data) {
+    throw runtime_error("Mismatch between data written and read");
+  }
 
   auto test_duration = duration_cast<duration<double>>(stop_time - start_time);
   auto bytes_per_second = static_cast<double>(num_chunks * capacity) / test_duration.count();
@@ -88,7 +92,7 @@ int main()
 {
   try {
     program_body();
-  } catch (const exception& e) {
+  } catch (const exception &e) {
     cerr << "Exception: " << e.what() << "\n";
     return EXIT_FAILURE;
   }

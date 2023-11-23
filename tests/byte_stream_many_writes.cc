@@ -39,7 +39,7 @@ int main()
       }
     }
 
-  } catch (const exception& e) {
+  } catch (const exception &e) {
     cerr << "Exception: " << e.what() << endl;
     return EXIT_FAILURE;
   }

@@ -10,11 +10,11 @@
 
 class Wrap32
 {
- protected:
+protected:
   uint32_t raw_value_ {};
   static constexpr uint64_t MOD = static_cast<uint64_t>(UINT32_MAX) + 1;
 
- public:
+public:
   explicit Wrap32(uint32_t raw_value) : raw_value_(raw_value) {}
 
   /* Construct a Wrap32 given an absolute sequence number n and the zero point. */
@@ -30,5 +30,5 @@ class Wrap32
   uint64_t unwrap(Wrap32 zero_point, uint64_t checkpoint) const;
 
   Wrap32 operator+(uint32_t n) const { return Wrap32 {raw_value_ + n}; }
-  bool operator==(const Wrap32& other) const { return raw_value_ == other.raw_value_; }
+  bool operator==(const Wrap32 &other) const { return raw_value_ == other.raw_value_; }
 };

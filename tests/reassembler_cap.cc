@@ -97,7 +97,7 @@ int main()
       test.execute(ReadAll("c"));
     }
 
-  } catch (const exception& e) {
+  } catch (const exception &e) {
     cerr << "Exception: " << e.what() << endl;
     return EXIT_FAILURE;
   }

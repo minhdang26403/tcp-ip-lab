@@ -16,7 +16,7 @@ using namespace std;
 
 static constexpr unsigned NREPS = 64;
 
-void do_test_1(const TCPConfig& cfg, default_random_engine& rd)
+void do_test_1(const TCPConfig &cfg, default_random_engine &rd)
 {
   const Wrap32 rx_isn(rd());
   TCPReceiverTestHarness test_1 {"non-overlapping out-of-order segments", cfg.recv_capacity};
@@ -38,7 +38,9 @@ void do_test_1(const TCPConfig& cfg, default_random_engine& rd)
   uint64_t max_expect_ackno = 1;
   for (auto [off, sz] : seq_size) {
     test_1.execute(SegmentArrives {}.with_seqno(rx_isn + 1 + off).with_data(d.substr(off, sz)));
-    if (off + 1 == min_expect_ackno) { min_expect_ackno = min_expect_ackno + sz; }
+    if (off + 1 == min_expect_ackno) {
+      min_expect_ackno = min_expect_ackno + sz;
+    }
     max_expect_ackno = max_expect_ackno + sz;
     test_1.execute(ExpectAcknoBetween {rx_isn, off, min_expect_ackno, max_expect_ackno});
   }
@@ -47,7 +49,7 @@ void do_test_1(const TCPConfig& cfg, default_random_engine& rd)
   test_1.execute(ReadAll {d});
 }
 
-void do_test_2(const TCPConfig& cfg, default_random_engine& rd)
+void do_test_2(const TCPConfig &cfg, default_random_engine &rd)
 {
   const Wrap32 rx_isn(rd());
   TCPReceiverTestHarness test_2 {"overlapping out-of-order segments", cfg.recv_capacity};
@@ -88,7 +90,7 @@ void do_test_2(const TCPConfig& cfg, default_random_engine& rd)
     if (off + 1 <= min_expect_ackno && off + sz + 1 > min_expect_ackno) {
       min_expect_ackno = sz + off;
     }
-    max_expect_ackno = max_expect_ackno + sz;  // really loose because of overlap
+    max_expect_ackno = max_expect_ackno + sz; // really loose because of overlap
     test_2.execute(ExpectAcknoBetween {rx_isn, off, min_expect_ackno, max_expect_ackno});
   }
 
@@ -104,11 +106,15 @@ int main()
     auto rd = get_random_engine();
 
     // non-overlapping out-of-order segments
-    for (unsigned rep_no = 0; rep_no < NREPS; ++rep_no) { do_test_1(cfg, rd); }
+    for (unsigned rep_no = 0; rep_no < NREPS; ++rep_no) {
+      do_test_1(cfg, rd);
+    }
 
     // overlapping out-of-order segments
-    for (unsigned rep_no = 0; rep_no < NREPS; ++rep_no) { do_test_2(cfg, rd); }
-  } catch (const exception& e) {
+    for (unsigned rep_no = 0; rep_no < NREPS; ++rep_no) {
+      do_test_2(cfg, rd);
+    }
+  } catch (const exception &e) {
     cerr << e.what() << endl;
     return 1;
   }

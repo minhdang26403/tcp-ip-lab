@@ -84,7 +84,7 @@ int main()
           Wrap32::wrap(2UL * UINT32_MAX + i, Wrap32 {19}).unwrap(Wrap32 {19}, 2UL * UINT32_MAX),
           2UL * UINT32_MAX + i);
     }
-  } catch (const exception& e) {
+  } catch (const exception &e) {
     cerr << e.what() << endl;
     return 1;
   }

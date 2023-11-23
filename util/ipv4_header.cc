@@ -9,21 +9,21 @@
 using namespace std;
 
 // Parse from string.
-void IPv4Header::parse(Parser& parser)
+void IPv4Header::parse(Parser &parser)
 {
   uint8_t first_byte {};
   parser.integer(first_byte);
-  ver = first_byte >> 4;     // version
-  hlen = first_byte & 0x0f;  // header length
-  parser.integer(tos);       // type of service
+  ver = first_byte >> 4;    // version
+  hlen = first_byte & 0x0f; // header length
+  parser.integer(tos);      // type of service
   parser.integer(len);
   parser.integer(id);
 
   uint16_t fo_val {};
   parser.integer(fo_val);
-  df = static_cast<bool>(fo_val & 0x4000);  // don't fragment
-  mf = static_cast<bool>(fo_val & 0x2000);  // more fragments
-  offset = fo_val & 0x1fff;                 // offset
+  df = static_cast<bool>(fo_val & 0x4000); // don't fragment
+  mf = static_cast<bool>(fo_val & 0x2000); // more fragments
+  offset = fo_val & 0x1fff;                // offset
 
   parser.integer(ttl);
   parser.integer(proto);
@@ -31,26 +31,34 @@ void IPv4Header::parse(Parser& parser)
   parser.integer(src);
   parser.integer(dst);
 
-  if (ver != 4) { parser.set_error(); }
+  if (ver != 4) {
+    parser.set_error();
+  }
 
-  if (hlen < 5) { parser.set_error(); }
+  if (hlen < 5) {
+    parser.set_error();
+  }
 
   parser.remove_prefix(static_cast<uint64_t>(hlen) * 4 - IPv4Header::LENGTH);
 
   // Verify checksum
   uint16_t given_cksum = cksum;
   compute_checksum();
-  if (cksum != given_cksum) { parser.set_error(); }
+  if (cksum != given_cksum) {
+    parser.set_error();
+  }
 }
 
 // Serialize the IPv4Header (does not recompute the checksum)
-void IPv4Header::serialize(Serializer& serializer) const
+void IPv4Header::serialize(Serializer &serializer) const
 {
   // consistency checks
-  if (ver != 4) { throw runtime_error("wrong IP version"); }
+  if (ver != 4) {
+    throw runtime_error("wrong IP version");
+  }
 
   const uint8_t first_byte = (static_cast<uint32_t>(ver) << 4) | (hlen & 0xfU);
-  serializer.integer(first_byte);  // version and header length
+  serializer.integer(first_byte); // version and header length
   serializer.integer(tos);
   serializer.integer(len);
   serializer.integer(id);
@@ -82,10 +90,10 @@ uint16_t IPv4Header::payload_length() const { return len - 4 * hlen; }
 //! ~~~
 uint32_t IPv4Header::pseudo_checksum() const
 {
-  uint32_t pcksum = (src >> 16) + static_cast<uint16_t>(src);  // source addr
+  uint32_t pcksum = (src >> 16) + static_cast<uint16_t>(src); // source addr
   pcksum += (dst >> 16) + static_cast<uint16_t>(dst);
-  pcksum += proto;             // protocol
-  pcksum += payload_length();  // payload length
+  pcksum += proto;            // protocol
+  pcksum += payload_length(); // payload length
   return pcksum;
 }
 

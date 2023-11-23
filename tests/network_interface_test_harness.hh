@@ -10,16 +10,16 @@
 
 class NetworkInterfaceTestHarness : public TestHarness<NetworkInterface>
 {
- public:
-  NetworkInterfaceTestHarness(std::string test_name, const EthernetAddress& ethernet_address,
-                              const Address& ip_address)
+public:
+  NetworkInterfaceTestHarness(std::string test_name, const EthernetAddress &ethernet_address,
+                              const Address &ip_address)
       : TestHarness(move(test_name),
                     "eth=" + to_string(ethernet_address) + ", ip=" + ip_address.ip(),
                     NetworkInterface {ethernet_address, ip_address})
   {}
 };
 
-inline std::string summary(const EthernetFrame& frame);
+inline std::string summary(const EthernetFrame &frame);
 
 struct SendDatagram : public Action<NetworkInterface>
 {
@@ -32,7 +32,7 @@ struct SendDatagram : public Action<NetworkInterface>
            + "): " + dgram.header.to_string();
   }
 
-  void execute(NetworkInterface& interface) const override
+  void execute(NetworkInterface &interface) const override
   {
     interface.send_datagram(dgram, next_hop);
   }
@@ -40,17 +40,20 @@ struct SendDatagram : public Action<NetworkInterface>
   SendDatagram(InternetDatagram d, Address n) : dgram(std::move(d)), next_hop(n) {}
 };
 
-template <class T>
-bool equal(const T& t1, const T& t2)
+template <class T> bool equal(const T &t1, const T &t2)
 {
   std::vector<Buffer> t1s = serialize(t1);
   std::vector<Buffer> t2s = serialize(t2);
 
   std::string t1concat;
-  for (const auto& x : t1s) { t1concat.append(x); }
+  for (const auto &x : t1s) {
+    t1concat.append(x);
+  }
 
   std::string t2concat;
-  for (const auto& x : t2s) { t2concat.append(x); }
+  for (const auto &x : t2s) {
+    t2concat.append(x);
+  }
 
   return t1concat == t2concat;
 }
@@ -61,11 +64,13 @@ struct ReceiveFrame : public Action<NetworkInterface>
   std::optional<InternetDatagram> expected;
 
   std::string description() const override { return "frame arrives (" + summary(frame) + ")"; }
-  void execute(NetworkInterface& interface) const override
+  void execute(NetworkInterface &interface) const override
   {
     const std::optional<InternetDatagram> result = interface.recv_frame(frame);
 
-    if ((not result.has_value()) and (not expected.has_value())) { return; }
+    if ((not result.has_value()) and (not expected.has_value())) {
+      return;
+    }
 
     if (result.has_value() and not expected.has_value()) {
       throw ExpectationViolation(
@@ -100,7 +105,7 @@ struct ExpectFrame : public Expectation<NetworkInterface>
   {
     return "frame transmitted (" + summary(expected) + ")";
   }
-  void execute(NetworkInterface& interface) const override
+  void execute(NetworkInterface &interface) const override
   {
     auto frame = interface.maybe_send();
     if (not frame.has_value()) {
@@ -121,7 +126,7 @@ struct ExpectFrame : public Expectation<NetworkInterface>
 struct ExpectNoFrame : public Expectation<NetworkInterface>
 {
   std::string description() const override { return "no frame transmitted"; }
-  void execute(NetworkInterface& interface) const override
+  void execute(NetworkInterface &interface) const override
   {
     if (interface.maybe_send().has_value()) {
       throw ExpectationViolation(
@@ -135,34 +140,34 @@ struct Tick : public Action<NetworkInterface>
   size_t _ms;
 
   std::string description() const override { return to_string(_ms) + " ms pass"; }
-  void execute(NetworkInterface& interface) const override { interface.tick(_ms); }
+  void execute(NetworkInterface &interface) const override { interface.tick(_ms); }
 
   explicit Tick(const size_t ms) : _ms(ms) {}
 };
 
-inline std::string summary(const EthernetFrame& frame)
+inline std::string summary(const EthernetFrame &frame)
 {
   std::string out = frame.header.to_string() + ", payload: ";
   switch (frame.header.type) {
-    case EthernetHeader::TYPE_IPv4: {
-      InternetDatagram dgram;
-      if (parse(dgram, frame.payload)) {
-        out.append("IPv4: " + dgram.header.to_string());
-      } else {
-        out.append("bad IPv4 datagram");
-      }
-    } break;
-    case EthernetHeader::TYPE_ARP: {
-      ARPMessage arp;
-      if (parse(arp, frame.payload)) {
-        out.append("ARP: " + arp.to_string());
-      } else {
-        out.append("bad ARP message");
-      }
-    } break;
-    default:
-      out.append("unknown frame type");
-      break;
+  case EthernetHeader::TYPE_IPv4: {
+    InternetDatagram dgram;
+    if (parse(dgram, frame.payload)) {
+      out.append("IPv4: " + dgram.header.to_string());
+    } else {
+      out.append("bad IPv4 datagram");
+    }
+  } break;
+  case EthernetHeader::TYPE_ARP: {
+    ARPMessage arp;
+    if (parse(arp, frame.payload)) {
+      out.append("ARP: " + arp.to_string());
+    } else {
+      out.append("bad ARP message");
+    }
+  } break;
+  default:
+    out.append("unknown frame type");
+    break;
   }
   return out;
 }

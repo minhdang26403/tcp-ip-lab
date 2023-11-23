@@ -88,7 +88,7 @@ int main()
       test.execute(ExpectSeqno {isn + 9});
     }
 
-  } catch (const exception& e) {
+  } catch (const exception &e) {
     cerr << e.what() << endl;
     return 1;
   }

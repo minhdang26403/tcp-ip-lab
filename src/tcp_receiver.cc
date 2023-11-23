@@ -9,12 +9,14 @@
 
 using namespace std;
 
-void TCPReceiver::receive(TCPSenderMessage message, Reassembler& reassembler,
-                          Writer& inbound_stream)
+void TCPReceiver::receive(TCPSenderMessage message, Reassembler &reassembler,
+                          Writer &inbound_stream)
 {
   if (!receive_SYN_) {
     // Drop messages if we haven't received a message with SYN flag
-    if (!message.SYN) { return; }
+    if (!message.SYN) {
+      return;
+    }
     receive_SYN_ = true;
     isn_ = message.seqno;
   }
@@ -28,7 +30,7 @@ void TCPReceiver::receive(TCPSenderMessage message, Reassembler& reassembler,
   reassembler.insert(stream_index, message.payload.release(), message.FIN, inbound_stream);
 }
 
-TCPReceiverMessage TCPReceiver::send(const Writer& inbound_stream) const
+TCPReceiverMessage TCPReceiver::send(const Writer &inbound_stream) const
 {
   TCPReceiverMessage recv_msg {};
   // Window size is limited to 65,535 (UINT16_MAX)
@@ -37,7 +39,9 @@ TCPReceiverMessage TCPReceiver::send(const Writer& inbound_stream) const
                                    : inbound_stream.available_capacity();
   recv_msg.window_size = window_size;
 
-  if (!receive_SYN_) { return recv_msg; }
+  if (!receive_SYN_) {
+    return recv_msg;
+  }
 
   // Add one for SYN
   uint64_t abs_seqno_offset = inbound_stream.bytes_pushed() + 1;

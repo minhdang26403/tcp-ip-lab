@@ -12,8 +12,8 @@
 #define test_should_be(act, exp) test_should_be_helper(act, exp, #act, #exp, __LINE__)
 
 template <typename T>
-static void test_should_be_helper(const T& actual, const T& expected, const char* actual_s,
-                                  const char* expected_s, const int lineno)
+static void test_should_be_helper(const T &actual, const T &expected, const char *actual_s,
+                                  const char *expected_s, const int lineno)
 {
   if (actual != expected) {
     std::ostringstream ss;

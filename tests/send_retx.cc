@@ -118,7 +118,7 @@ int main()
       test.execute(Tick {1}.with_max_retx_exceeded(true));
     }
 
-  } catch (const exception& e) {
+  } catch (const exception &e) {
     cerr << e.what() << endl;
     return 1;
   }

@@ -272,7 +272,7 @@ int main()
       test.execute(BytesPushed(5));
       test.execute(BytesPending(0));
     }
-  } catch (const exception& e) {
+  } catch (const exception &e) {
     cerr << "Exception: " << e.what() << endl;
     return EXIT_FAILURE;
   }

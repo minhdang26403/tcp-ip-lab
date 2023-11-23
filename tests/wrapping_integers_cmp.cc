@@ -30,7 +30,7 @@ int main()
       test_should_be(Wrap32(n) != Wrap32(m), n != m);
     }
 
-  } catch (const exception& e) {
+  } catch (const exception &e) {
     cerr << e.what() << endl;
     return 1;
   }

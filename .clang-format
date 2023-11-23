@@ -1,6 +1,6 @@
 ---
 Language: Cpp
-BasedOnStyle: Google
+BasedOnStyle: Mozilla
 ColumnLimit: 100
 SpacesInParentheses: false
 AlwaysBreakAfterReturnType: None

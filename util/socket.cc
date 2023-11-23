@@ -24,8 +24,8 @@ Socket::Socket(const int domain, const int type, const int protocol)
 //! \param[in] domain is `fd`'s domain; throws std::runtime_error if wrong value is supplied
 //! \param[in] type is `fd`'s type; throws std::runtime_error if wrong value is supplied
 //! \param[in] protocol is `fd`'s protocol; throws std::runtime_error if wrong value is supplied
-Socket::Socket(FileDescriptor&& fd, int domain, int type,
-               int protocol)  // NOLINT(*-swappable-parameters)
+Socket::Socket(FileDescriptor &&fd, int domain, int type,
+               int protocol) // NOLINT(*-swappable-parameters)
     : FileDescriptor(move(fd))
 {
   int actual_value {};
@@ -54,8 +54,8 @@ Socket::Socket(FileDescriptor&& fd, int domain, int type,
 //! \param[in] name_of_function is the function to call (string passed to CheckSystemCall())
 //! \param[in] function is a pointer to the function
 //! \returns the requested Address
-Address Socket::get_address(const string& name_of_function,
-                            const function<int(int, sockaddr*, socklen_t*)>& function) const
+Address Socket::get_address(const string &name_of_function,
+                            const function<int(int, sockaddr *, socklen_t *)> &function) const
 {
   Address::Raw address;
   socklen_t size = sizeof(address);
@@ -73,7 +73,7 @@ Address Socket::peer_address() const { return get_address("getpeername", getpeer
 
 // bind socket to a specified local address (usually to listen/accept)
 //! \param[in] address is a local Address to bind
-void Socket::bind(const Address& address)
+void Socket::bind(const Address &address)
 {
   CheckSystemCall("bind", ::bind(fd_num(), address, address.size()));
 }
@@ -85,7 +85,7 @@ void Socket::bind_to_device(const string_view device_name)
 
 // connect socket to a specified peer address
 //! \param[in] address is the peer's Address
-void Socket::connect(const Address& address)
+void Socket::connect(const Address &address)
 {
   CheckSystemCall("connect", ::connect(fd_num(), address, address.size()));
 }
@@ -97,24 +97,24 @@ void Socket::shutdown(const int how)
 {
   CheckSystemCall("shutdown", ::shutdown(fd_num(), how));
   switch (how) {
-    case SHUT_RD:
-      register_read();
-      break;
-    case SHUT_WR:
-      register_write();
-      break;
-    case SHUT_RDWR:
-      register_read();
-      register_write();
-      break;
-    default:
-      throw runtime_error("Socket::shutdown() called with invalid `how`");
+  case SHUT_RD:
+    register_read();
+    break;
+  case SHUT_WR:
+    register_write();
+    break;
+  case SHUT_RDWR:
+    register_read();
+    register_write();
+    break;
+  default:
+    throw runtime_error("Socket::shutdown() called with invalid `how`");
   }
 }
 
 //! \note If payload is too small to hold the received datagram, this method throws a
 //! std::runtime_error
-void DatagramSocket::recv(Address& source_address, string& payload)
+void DatagramSocket::recv(Address &source_address, string &payload)
 {
   // receive source address and payload
   Address::Raw datagram_source_address;
@@ -136,7 +136,7 @@ void DatagramSocket::recv(Address& source_address, string& payload)
   payload.resize(recv_len);
 }
 
-void DatagramSocket::sendto(const Address& destination, const string_view payload)
+void DatagramSocket::sendto(const Address &destination, const string_view payload)
 {
   CheckSystemCall("sendto", ::sendto(fd_num(), payload.data(), payload.length(), 0, destination,
                                      destination.size()));
@@ -168,7 +168,7 @@ TCPSocket TCPSocket::accept()
 
 // get socket option
 template <typename option_type>
-socklen_t Socket::getsockopt(const int level, const int option, option_type& option_value) const
+socklen_t Socket::getsockopt(const int level, const int option, option_type &option_value) const
 {
   socklen_t optlen = sizeof(option_value);
   CheckSystemCall("getsockopt", ::getsockopt(fd_num(), level, option, &option_value, &optlen));
@@ -181,7 +181,7 @@ socklen_t Socket::getsockopt(const int level, const int option, option_type& opt
 //! \param[in] option_value The value to set
 //! \details See [setsockopt(2)](\ref man2::setsockopt) for details.
 template <typename option_type>
-void Socket::setsockopt(const int level, const int option, const option_type& option_value)
+void Socket::setsockopt(const int level, const int option, const option_type &option_value)
 {
   CheckSystemCall("setsockopt",
                   ::setsockopt(fd_num(), level, option, &option_value, sizeof(option_value)));
@@ -206,7 +206,9 @@ void Socket::throw_if_error() const
     throw runtime_error("unexpected length from getsockopt: " + to_string(len));
   }
 
-  if (socket_error) { throw unix_error("socket error", socket_error); }
+  if (socket_error) {
+    throw unix_error("socket error", socket_error);
+  }
 }
 
 void PacketSocket::set_promiscuous()

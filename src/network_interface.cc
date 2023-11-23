@@ -7,8 +7,8 @@ using namespace std;
 
 // ethernet_address: Ethernet (what ARP calls "hardware") address of the interface
 // ip_address: IP (what ARP calls "protocol") address of the interface
-NetworkInterface::NetworkInterface(const EthernetAddress& ethernet_address,
-                                   const Address& ip_address)
+NetworkInterface::NetworkInterface(const EthernetAddress &ethernet_address,
+                                   const Address &ip_address)
     : ethernet_address_(ethernet_address), ip_address_(ip_address)
 {
   cerr << "DEBUG: Network interface has Ethernet address " << to_string(ethernet_address_)
@@ -21,14 +21,14 @@ NetworkInterface::NetworkInterface(const EthernetAddress& ethernet_address,
 
 // Note: the Address type can be converted to a uint32_t (raw 32-bit IP address) by using the
 // Address::ipv4_numeric() method.
-void NetworkInterface::send_datagram(const InternetDatagram& dgram, const Address& next_hop)
+void NetworkInterface::send_datagram(const InternetDatagram &dgram, const Address &next_hop)
 {
   (void)dgram;
   (void)next_hop;
 }
 
 // frame: the incoming Ethernet frame
-optional<InternetDatagram> NetworkInterface::recv_frame(const EthernetFrame& frame)
+optional<InternetDatagram> NetworkInterface::recv_frame(const EthernetFrame &frame)
 {
   (void)frame;
   return {};

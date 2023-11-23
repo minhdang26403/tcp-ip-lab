@@ -185,7 +185,7 @@ int main()
       test.execute(ExpectAckno {Wrap32 {static_cast<uint32_t>(isn + bytes.size() + 1)}});
       test.execute(ReadAll {"abcdefghij"});
     }
-  } catch (const exception& e) {
+  } catch (const exception &e) {
     cerr << e.what() << endl;
     return 1;
   }

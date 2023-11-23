@@ -570,7 +570,7 @@ int main()
       test.execute(ExpectSeqnosInFlight {0});
       test.execute(ExpectSeqno {isn + 2 + bigstring.size()});
     }
-  } catch (const exception& e) {
+  } catch (const exception &e) {
     cerr << e.what() << endl;
     return 1;
   }

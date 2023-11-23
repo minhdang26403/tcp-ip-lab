@@ -42,7 +42,7 @@ int main()
 
       sr.execute(ReadAll {d});
     }
-  } catch (const exception& e) {
+  } catch (const exception &e) {
     cerr << "Exception: " << e.what() << endl;
     return EXIT_FAILURE;
   }

@@ -1,12 +1,12 @@
 #pragma once
 
+#include "byte_stream.hh"
+#include "tcp_receiver_message.hh"
+#include "tcp_sender_message.hh"
 #include <iostream>
 #include <map>
 #include <queue>
 #include <unordered_set>
-#include "byte_stream.hh"
-#include "tcp_receiver_message.hh"
-#include "tcp_sender_message.hh"
 
 enum class State
 {
@@ -17,11 +17,11 @@ enum class State
 
 class CountdownTimer
 {
- private:
+private:
   uint64_t ms_ {};
   State state_ {State::IDLE};
 
- public:
+public:
   void start(uint64_t start_time)
   {
     ms_ = start_time;
@@ -30,7 +30,9 @@ class CountdownTimer
 
   void tick(uint64_t ms_since_last_tick)
   {
-    if (state_ != State::RUNNING) { return; }
+    if (state_ != State::RUNNING) {
+      return;
+    }
     if (ms_ <= ms_since_last_tick) {
       ms_ = 0;
       state_ = State::EXPIRED;
@@ -50,7 +52,7 @@ class CountdownTimer
 
 class TCPSender
 {
- private:
+private:
   bool send_SYN_ {};
   bool receive_FIN_ {};
   Wrap32 isn_ {0};
@@ -70,14 +72,14 @@ class TCPSender
   // pushed into the queue in an increasing order
   std::queue<TCPSenderMessage> outstanding_msgs_ {};
 
-  bool fit_in_window(const TCPSenderMessage& msg) const;
+  bool fit_in_window(const TCPSenderMessage &msg) const;
 
- public:
+public:
   /* Construct TCP sender with given default Retransmission Timeout and possible ISN */
   TCPSender(uint64_t initial_RTO_ms, std::optional<Wrap32> fixed_isn);
 
   /* Push bytes from the outbound stream */
-  void push(Reader& outbound_stream);
+  void push(Reader &outbound_stream);
 
   /* Send a TCPSenderMessage if needed (or empty optional otherwise) */
   std::optional<TCPSenderMessage> maybe_send();
@@ -86,14 +88,14 @@ class TCPSender
   TCPSenderMessage send_empty_message() const;
 
   /* Receive an act on a TCPReceiverMessage from the peer's receiver */
-  void receive(const TCPReceiverMessage& msg);
+  void receive(const TCPReceiverMessage &msg);
 
   /* Time has passed by the given # of milliseconds since the last time the tick() method was
    * called. */
   void tick(uint64_t ms_since_last_tick);
 
   /* Accessors for use in testing */
-  uint64_t sequence_numbers_in_flight() const;  // How many sequence numbers are outstanding?
-  uint64_t consecutive_retransmissions()
-      const;  // How many consecutive *re*transmissions have happened?
+  uint64_t sequence_numbers_in_flight() const; // How many sequence numbers are outstanding?
+  uint64_t
+  consecutive_retransmissions() const; // How many consecutive *re*transmissions have happened?
 };

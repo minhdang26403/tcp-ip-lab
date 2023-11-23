@@ -6,17 +6,17 @@
 
 class TCPReceiver
 {
- private:
+private:
   bool receive_SYN_ {false};
   Wrap32 isn_ {0};
 
- public:
+public:
   /*
    * The TCPReceiver receives TCPSenderMessages, inserting their payload into the Reassembler
    * at the correct stream index.
    */
-  void receive(TCPSenderMessage message, Reassembler& reassembler, Writer& inbound_stream);
+  void receive(TCPSenderMessage message, Reassembler &reassembler, Writer &inbound_stream);
 
   /* The TCPReceiver sends TCPReceiverMessages back to the TCPSender. */
-  TCPReceiverMessage send(const Writer& inbound_stream) const;
+  TCPReceiverMessage send(const Writer &inbound_stream) const;
 };
