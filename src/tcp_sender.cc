@@ -1,8 +1,19 @@
 #include "tcp_sender.hh"
 
+#include "buffer.hh"
+#include "byte_stream.hh"
 #include "tcp_config.hh"
+#include "tcp_receiver_message.hh"
+#include "tcp_sender_message.hh"
+#include "wrapping_integers.hh"
 
+#include <algorithm>
+#include <cstddef> // size_t
+#include <cstdint> // uint64_t
+#include <optional>
 #include <random>
+#include <string>
+#include <utility>
 
 using namespace std;
 
@@ -96,8 +107,8 @@ void TCPSender::push(Reader& outbound_stream)
 
     msg.seqno = Wrap32::wrap(abs_seqno_, isn_);
 
-    uint64_t max_possible_segment_size = ackno_ + get_window_size() - abs_seqno_ - msg.SYN;
-    uint64_t payload_size = min(TCPConfig::MAX_PAYLOAD_SIZE, max_possible_segment_size);
+    const uint64_t max_possible_segment_size = ackno_ + get_window_size() - abs_seqno_ - msg.SYN;
+    const uint64_t payload_size = min(TCPConfig::MAX_PAYLOAD_SIZE, max_possible_segment_size);
     std::string payload {outbound_stream.peek().substr(0, payload_size)};
     msg.payload = Buffer {std::move(payload)};
     outbound_stream.pop(payload_size);
@@ -131,9 +142,9 @@ void TCPSender::receive(const TCPReceiverMessage& msg)
   if (msg.ackno.has_value()) {
     // the ackno reflects an absolute sequence number bigger than
     // any previous ackno
-    uint64_t new_ackno = msg.ackno.value().unwrap(isn_, abs_seqno_);
+    const uint64_t new_ackno = msg.ackno.value().unwrap(isn_, abs_seqno_);
     // Invalid ackno
-    if (!acknos_.count(new_ackno)) {
+    if (!acknos_.contains(new_ackno)) {
       return;
     }
     acknos_.erase(new_ackno);
@@ -169,7 +180,7 @@ void TCPSender::tick(const size_t ms_since_last_tick)
 
 bool TCPSender::fit_in_window(const TCPSenderMessage& msg) const
 {
-  Wrap32 last_seqno = msg.seqno + msg.sequence_length();
+  const Wrap32 last_seqno = msg.seqno + msg.sequence_length();
   // When the window size is zero, this method pretends like
   // the window size is 1
   return last_seqno.unwrap(isn_, abs_seqno_) <= ackno_ + get_window_size();
