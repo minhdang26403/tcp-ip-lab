@@ -7,7 +7,7 @@
 class TCPReceiver
 {
  private:
-  bool receive_syn_ {false};
+  bool receive_SYN_ {false};
   Wrap32 isn_ {0};
 
  public:
