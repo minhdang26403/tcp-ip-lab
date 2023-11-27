@@ -9,7 +9,7 @@ I collaborated with: [list sunetids here]
 
 I would like to thank/reward these classmates for their help: [list sunetids here]
 
-This checkpoint took me about [n] hours to do. I [did/did not] attend the lab session.
+This checkpoint took me about 2 hours to do. I [did/did not] attend the lab session.
 
 Program Structure and Design of the NetworkInterface:
 []

@@ -1,11 +1,10 @@
 #pragma once
 
 #include "address.hh"
+#include "arp_message.hh"
 #include "ethernet_frame.hh"
 #include "ipv4_datagram.hh"
 
-#include <iostream>
-#include <list>
 #include <optional>
 #include <queue>
 #include <unordered_map>
@@ -40,6 +39,21 @@ private:
 
   // IP (known as Internet-layer or network-layer) address of the interface
   Address ip_address_;
+
+  // Mapping from IP addresses to Ethernet addresses
+  std::unordered_map<uint32_t, std::pair<EthernetAddress, size_t>> address_map_ {};
+
+  // Queue of Ethernet frames awaiting transmission
+  std::queue<EthernetFrame> sent_frames_ {};
+
+  // Queue of Internet datagrams awaiting ARP reply
+  std::unordered_map<uint32_t, std::pair<InternetDatagram, size_t>> unresolved_dgrams_ {};
+
+  // Number of milliseconds has passed since the construction of this network interface
+  size_t time_ {};
+
+  // Helper function to handle ARP requests/replies
+  void handle_arp_msg(const ARPMessage& arp_msg);
 
 public:
   // Construct a network interface with given Ethernet (network-access-layer) and IP
