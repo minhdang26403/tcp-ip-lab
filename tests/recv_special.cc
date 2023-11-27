@@ -168,17 +168,10 @@ int main()
     {
       const size_t cap = 10;
       const uint32_t isn = 123456;
-<<<<<<< HEAD
       TCPReceiverTestHarness test {"pushing bytes in reverse order in initial SYN", cap};
       test.execute(SegmentArrives {}.with_syn().with_seqno(isn));
-      vector<uint8_t> bytes = {'j', 'i', 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a'};
+      string bytes = {'j', 'i', 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a'};
       for (int i = cap - 1; i >= 1; --i) {
-=======
-      TCPReceiverTestHarness test { "pushing bytes in reverse order in initial SYN", cap };
-      test.execute( SegmentArrives {}.with_syn().with_seqno( isn ) );
-      string bytes = { 'j', 'i', 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a' };
-      for ( int i = cap - 1; i >= 1; --i ) {
->>>>>>> origin/check4-startercode
         test.execute(
           SegmentArrives {}.with_seqno(isn + i + 1).with_data(std::string(1, bytes[cap - i - 1])));
         test.execute(ExpectAckno {Wrap32 {isn + 1}});
