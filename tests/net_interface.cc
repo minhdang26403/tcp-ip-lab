@@ -56,7 +56,7 @@ EthernetFrame make_frame(const EthernetAddress& src,
   frame.header.src = src;
   frame.header.dst = dst;
   frame.header.type = type;
-  frame.payload = payload;
+  frame.payload = std::move( payload );
   return frame;
 }
 
@@ -83,13 +83,13 @@ int main()
       test.execute(ExpectNoFrame {});
 
       // ARP reply should result in the queued datagram getting sent
-      test.execute(ReceiveFrame {
-        make_frame(target_eth,
-                   local_eth,
-                   EthernetHeader::TYPE_ARP,
-                   serialize(make_arp(
-                     ARPMessage::OPCODE_REPLY, target_eth, "192.168.0.1", local_eth, "4.3.2.1"))),
-        {}});
+      test.execute( ReceiveFrame {
+        make_frame(
+          target_eth,
+          local_eth,
+          EthernetHeader::TYPE_ARP, // NOLINTNEXTLINE(*-suspicious-*)
+          serialize( make_arp( ARPMessage::OPCODE_REPLY, target_eth, "192.168.0.1", local_eth, "4.3.2.1" ) ) ),
+        {} } );
 
       test.execute(ExpectFrame {
         make_frame(local_eth, target_eth, EthernetHeader::TYPE_IPv4, serialize(datagram))});
@@ -208,13 +208,13 @@ int main()
         EthernetHeader::TYPE_ARP,
         serialize(make_arp(ARPMessage::OPCODE_REQUEST, local_eth, "4.3.2.1", {}, "192.168.0.1")))});
       const EthernetAddress target_eth = random_private_ethernet_address();
-      test.execute(ReceiveFrame {
-        make_frame(target_eth,
-                   local_eth,
-                   EthernetHeader::TYPE_ARP,
-                   serialize(make_arp(
-                     ARPMessage::OPCODE_REPLY, target_eth, "192.168.0.1", local_eth, "4.3.2.1"))),
-        {}});
+      test.execute( ReceiveFrame {
+        make_frame(
+          target_eth,
+          local_eth,
+          EthernetHeader::TYPE_ARP, // NOLINTNEXTLINE(*-suspicious-*)
+          serialize( make_arp( ARPMessage::OPCODE_REPLY, target_eth, "192.168.0.1", local_eth, "4.3.2.1" ) ) ),
+        {} } );
 
       test.execute(ExpectFrame {
         make_frame(local_eth, target_eth, EthernetHeader::TYPE_IPv4, serialize(datagram))});
