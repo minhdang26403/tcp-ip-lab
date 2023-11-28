@@ -18,7 +18,7 @@ public:
   using NetworkInterface::NetworkInterface;
 
   // Construct from a NetworkInterface
-  explicit AsyncNetworkInterface( NetworkInterface&& interface ) : NetworkInterface( interface ) {}
+  explicit AsyncNetworkInterface(NetworkInterface&& interface) : NetworkInterface(interface) {}
 
   // \brief Receives and Ethernet frame and responds appropriately.
 
@@ -27,22 +27,22 @@ public:
   // - If type is ARP reply, learn a mapping from the "target" fields.
   //
   // \param[in] frame the incoming Ethernet frame
-  void recv_frame( const EthernetFrame& frame )
+  void recv_frame(const EthernetFrame& frame)
   {
-    auto optional_dgram = NetworkInterface::recv_frame( frame );
-    if ( optional_dgram.has_value() ) {
-      datagrams_in_.push( std::move( optional_dgram.value() ) );
+    auto optional_dgram = NetworkInterface::recv_frame(frame);
+    if (optional_dgram.has_value()) {
+      datagrams_in_.push(std::move(optional_dgram.value()));
     }
   };
 
   // Access queue of Internet datagrams that have been received
   std::optional<InternetDatagram> maybe_receive()
   {
-    if ( datagrams_in_.empty() ) {
+    if (datagrams_in_.empty()) {
       return {};
     }
 
-    InternetDatagram datagram = std::move( datagrams_in_.front() );
+    InternetDatagram datagram = std::move(datagrams_in_.front());
     datagrams_in_.pop();
     return datagram;
   }
@@ -59,20 +59,20 @@ public:
   // Add an interface to the router
   // interface: an already-constructed network interface
   // returns the index of the interface after it has been added to the router
-  size_t add_interface( AsyncNetworkInterface&& interface )
+  size_t add_interface(AsyncNetworkInterface&& interface)
   {
-    interfaces_.push_back( std::move( interface ) );
+    interfaces_.push_back(std::move(interface));
     return interfaces_.size() - 1;
   }
 
   // Access an interface by index
-  AsyncNetworkInterface& interface( size_t N ) { return interfaces_.at( N ); }
+  AsyncNetworkInterface& interface(size_t N) { return interfaces_.at(N); }
 
   // Add a route (a forwarding rule)
-  void add_route( uint32_t route_prefix,
-                  uint8_t prefix_length,
-                  std::optional<Address> next_hop,
-                  size_t interface_num );
+  void add_route(uint32_t route_prefix,
+                 uint8_t prefix_length,
+                 std::optional<Address> next_hop,
+                 size_t interface_num);
 
   // Route packets between the interfaces. For each interface, use the
   // maybe_receive() method to consume every incoming datagram and
