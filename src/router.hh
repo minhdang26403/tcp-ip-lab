@@ -18,7 +18,9 @@ public:
   using NetworkInterface::NetworkInterface;
 
   // Construct from a NetworkInterface
-  explicit AsyncNetworkInterface(NetworkInterface&& interface) : NetworkInterface(interface) {}
+  explicit AsyncNetworkInterface(NetworkInterface&& interface)
+    : NetworkInterface(std::move(interface))
+  {}
 
   // \brief Receives and Ethernet frame and responds appropriately.
 

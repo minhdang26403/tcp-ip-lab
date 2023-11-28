@@ -14,13 +14,15 @@ using namespace std;
 // a: unsigned 32-bit integer
 // b: unsigned 32-bit integer
 // n: number of most significant bits of `a` and `b` to compare
-bool match(uint32_t a, uint32_t b, uint8_t n)
+bool match(uint32_t a, // NOLINT(bugprone-easily-swappable-parameters)
+           uint32_t b, // NOLINT(bugprone-easily-swappable-parameters)
+           uint8_t n)  // NOLINT(bugprone-easily-swappable-parameters)
 {
   if (n == 0) {
     return true;
   }
   uint32_t mask = UINT32_MAX;
-  mask = mask << (32 - n);
+  mask = mask << static_cast<uint8_t>(32 - n);
   return (a & mask) == (b & mask);
 }
 
@@ -70,9 +72,9 @@ void Router::route()
       const Entry& matched_entry = matched_entry_opt.value();
       // Recompute checksum since we decrement the datagram's `ttl` field
       dgram.header.compute_checksum();
-      Address next_hop = matched_entry.next_hop.has_value()
-                           ? matched_entry.next_hop.value()
-                           : Address::from_ipv4_numeric(dgram.header.dst);
+      const Address next_hop = matched_entry.next_hop.has_value()
+                                 ? matched_entry.next_hop.value()
+                                 : Address::from_ipv4_numeric(dgram.header.dst);
       interface(matched_entry.interface_num).send_datagram(dgram, next_hop);
     }
   }
