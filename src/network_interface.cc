@@ -39,8 +39,8 @@ void NetworkInterface::send_datagram(const InternetDatagram& dgram, const Addres
     const EthernetAddress& dst_address = address_map_.at(next_hop_ip_address).first;
     const EthernetHeader header {
       .dst = dst_address, .src = ethernet_address_, .type = EthernetHeader::TYPE_IPv4};
-    const EthernetFrame frame {.header = header, .payload = serialize(dgram)};
-    sent_frames_.push(frame);
+    EthernetFrame frame {.header = header, .payload = serialize(dgram)};
+    sent_frames_.push(std::move(frame));
     return;
   }
 
@@ -63,8 +63,8 @@ void NetworkInterface::send_datagram(const InternetDatagram& dgram, const Addres
   };
   const EthernetHeader header {
     .dst = ETHERNET_BROADCAST, .src = ethernet_address_, .type = EthernetHeader::TYPE_ARP};
-  const EthernetFrame frame {.header = header, .payload = serialize(arp_msg)};
-  sent_frames_.push(frame);
+  EthernetFrame frame {.header = header, .payload = serialize(arp_msg)};
+  sent_frames_.push(std::move(frame));
 
   // Queue the IP datagram
   unresolved_dgrams_[next_hop_ip_address] = {dgram, time_};
@@ -116,7 +116,7 @@ optional<EthernetFrame> NetworkInterface::maybe_send()
     return optional<EthernetFrame> {};
   }
 
-  const EthernetFrame frame = sent_frames_.front();
+  const EthernetFrame frame = std::move(sent_frames_.front());
   sent_frames_.pop();
   return optional {frame};
 }
@@ -137,16 +137,16 @@ void NetworkInterface::handle_arp_msg(const ARPMessage& arp_msg)
       .src = reply_arp_msg.sender_ethernet_address,
       .type = EthernetHeader::TYPE_ARP,
     };
-    const EthernetFrame frame {.header = header, .payload = serialize(reply_arp_msg)};
-    sent_frames_.push(frame);
+    EthernetFrame frame {.header = header, .payload = serialize(reply_arp_msg)};
+    sent_frames_.push(std::move(frame));
   } else if (arp_msg.opcode == ARPMessage::OPCODE_REPLY
              && unresolved_dgrams_.contains(arp_msg.sender_ip_address)) {
     const EthernetHeader header {.dst = arp_msg.sender_ethernet_address,
                                  .src = ethernet_address_,
                                  .type = EthernetHeader::TYPE_IPv4};
     const InternetDatagram& dgram = unresolved_dgrams_.at(arp_msg.sender_ip_address).first;
-    const EthernetFrame frame {.header = header, .payload = serialize(dgram)};
+    EthernetFrame frame {.header = header, .payload = serialize(dgram)};
     unresolved_dgrams_.erase(arp_msg.sender_ip_address);
-    sent_frames_.push(frame);
+    sent_frames_.push(std::move(frame));
   }
 }
