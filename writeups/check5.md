@@ -15,7 +15,7 @@ Program Structure and Design of the Router:
 []
 
 Implementation Challenges:
-[]
+- Remember to recompute checksum after modifying the `ttl` field of the datagram
 
 Remaining Bugs:
 []
